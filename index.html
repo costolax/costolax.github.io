@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comic Vault</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              title: ["Bebas Neue", "sans-serif"],
+              body: ["Space Grotesk", "sans-serif"],
+            },
+            colors: {
+              ink: "#22143d",
+            },
+            boxShadow: {
+              comic: "0 18px 45px -22px rgba(46, 16, 101, 0.6)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-violet-200 via-fuchsia-100 to-indigo-200 font-body text-ink">
+    <main class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+      <header class="mb-10 text-center">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.24em] text-violet-700">My Comic Collection</p>
+        <h1 class="font-title text-6xl uppercase leading-none tracking-wide text-ink sm:text-7xl">Comic Vault</h1>
+        <p class="mx-auto mt-4 max-w-2xl text-base text-slate-700 sm:text-lg">
+          Tap any cover to download that volume.
+        </p>
+      </header>
+
+      <section id="comic-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></section>
+    </main>
+
+    <script>
+      const volumes = [
+        { id: 1, title: "Volume 01", image: "images/volume-01.jpg", download: "downloads/volume-01.pdf" },
+        { id: 2, title: "Volume 02", image: "images/volume-02.jpg", download: "downloads/volume-02.pdf" },
+        { id: 3, title: "Volume 03", image: "images/volume-03.jpg", download: "downloads/volume-03.pdf" },
+        { id: 4, title: "Volume 04", image: "images/volume-04.jpg", download: "downloads/volume-04.pdf" },
+        { id: 5, title: "Volume 05", image: "images/volume-05.jpg", download: "downloads/volume-05.pdf" },
+        { id: 6, title: "Volume 06", image: "images/volume-06.jpg", download: "downloads/volume-06.pdf" },
+      ];
+
+      const grid = document.getElementById("comic-grid");
+
+      grid.innerHTML = volumes
+        .map(
+          (volume) => `
+            <article class="overflow-hidden rounded-2xl border border-violet-100/80 bg-white/80 shadow-comic backdrop-blur">
+              <a href="${volume.download}" class="block focus:outline-none focus-visible:ring-4 focus-visible:ring-violet-300">
+                <img src="${volume.image}" alt="Comic ${volume.title} cover" class="h-80 w-full object-cover" />
+                <div class="p-4">
+                  <h2 class="font-title text-3xl uppercase tracking-wide">${volume.title}</h2>
+                  <p class="text-sm text-violet-700/80">Click cover to download</p>
+                </div>
+              </a>
+            </article>
+          `,
+        )
+        .join("");
+    </script>
+  </body>
+</html>
