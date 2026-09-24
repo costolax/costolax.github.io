@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import { sito } from '../site.config';
+import { link } from '../i18n/ui';
+---
+
+<!-- Stripe rimanda qui dopo ogni pagamento (un solo indirizzo per entrambe le lingue), quindi la pagina è bilingue. -->
+<Base lingua="it" titolo="Grazie! · Thank you!" nascondiDaiMotori>
+  <section class="wrap grazie">
+    <h1 class="sfx">Grazie!</h1>
+    <div class="nuvolette">
+      <div class="nuvoletta">
+        <p>
+          Pagamento ricevuto! Stripe ti ha mandato la ricevuta via email. Prepariamo il pacco e ti scriviamo quando
+          parte.
+        </p>
+      </div>
+      <div class="nuvoletta" lang="en">
+        <p>
+          Thank you! Payment received. Stripe has emailed you the receipt. We'll pack your order and let you know when
+          it ships.
+        </p>
+      </div>
+    </div>
+    <p class="aiuto">
+      Qualcosa non torna? · Something wrong? <a href={`mailto:${sito.email}`}>{sito.email}</a>
+    </p>
+    <div class="azioni">
+      <a class="btn" href={link('it', 'shop')}>Torna allo shop</a>
+      <a class="btn btn-chiaro" href={link('en', 'shop')} lang="en">Back to the shop</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .grazie {
+    display: grid;
+    justify-items: start;
+    gap: 36px;
+    padding-block: clamp(40px, 8vw, 96px);
+  }
+
+  .sfx {
+    margin: 0;
+    font-size: clamp(3.5rem, 14vw, 9rem);
+    color: var(--giallo);
+    -webkit-text-stroke: 3px var(--inchiostro);
+    paint-order: stroke fill;
+    text-shadow: 6px 6px 0 var(--magenta);
+    rotate: -4deg;
+  }
+
+  .nuvolette {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 44px 32px;
+    width: 100%;
+    max-width: 820px;
+  }
+
+  .aiuto {
+    margin: 0;
+  }
+
+  .aiuto a {
+    text-decoration-color: var(--magenta);
+  }
+</style>

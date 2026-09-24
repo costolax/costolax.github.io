@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import Testata from '../Testata.astro';
+// i tre fondatori nell'intro del N.0
+import decorazione from '../../assets/fumetti/costolax-n0-intro-pagina-04.webp';
+import ArtistaCard from '../ArtistaCard.astro';
+import { inclina, ordinati } from '../../lib/contenuti';
+import { t, type Lingua } from '../../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const testo = t(lingua).artisti;
+const artisti = await ordinati('artisti');
+const fondatori = artisti.filter((a) => a.data.fondatore);
+const altri = artisti.filter((a) => !a.data.fondatore);
+---
+
+<Base lingua={lingua} sezione="artisti" titolo={testo.titolo} descrizione={testo.descrizione}>
+  <Testata decorazione={decorazione} lingua={lingua} inquadratura="45% 45%">
+    <h1>{testo.titoloPagina}</h1>
+    <p>{testo.intro}</p>
+  </Testata>
+
+  {
+    fondatori.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.fondatori}</span>
+        </h2>
+        <div class="griglia griglia-compatta">
+          {fondatori.map((artista, i) => (
+            <ArtistaCard artista={artista} lingua={lingua} inclina={inclina(i)} loading={i < 3 ? 'eager' : undefined} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    altri.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.altri}</span>
+        </h2>
+        <div class="griglia griglia-compatta">
+          {altri.map((artista, i) => (
+            <ArtistaCard artista={artista} lingua={lingua} inclina={inclina(i + 1)} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Base>

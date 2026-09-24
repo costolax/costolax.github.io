@@ -1,0 +1,169 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import logo from '../assets/marchio/logo.png';
+import scritta from '../assets/marchio/scritta-costolax.webp';
+import { sito } from '../site.config';
+import { link, t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const testo = t(lingua);
+const info = link(lingua, 'info');
+// Spedizioni, resi, privacy e Stripe servono solo quando lo shop è aperto (c'è almeno un prodotto).
+const shopAperto = (await getCollection('prodotti')).length > 0;
+const anno = new Date().getFullYear();
+---
+
+<footer class="piede">
+  <div class="wrap piede-dentro">
+    <div class="piede-marchio">
+      <Image src={logo} alt="" width={72} height={72} densities={[1, 2, 3]} />
+      <div>
+        <p class="piede-nome">
+          <Image src={scritta} alt={sito.nome} width={150} densities={[1, 2, 3]} />
+        </p>
+        <p class="piede-motto">{testo.motto}</p>
+      </div>
+    </div>
+
+    <ul class="piede-link">
+      <li>
+        <a href={sito.instagram} target="_blank" rel="noopener">
+          Instagram<span class="sr-only"> {testo.nuovaScheda}</span>
+        </a>
+      </li>
+      <li><a href={`mailto:${sito.email}`}>{sito.email}</a></li>
+      {
+        shopAperto && (
+          <>
+            <li>
+              <a href={`${info}#${testo.info.ancore.spedizioni}`}>{testo.piede.spedizioni}</a>
+            </li>
+            <li>
+              <a href={`${info}#${testo.info.ancore.resi}`}>{testo.piede.resi}</a>
+            </li>
+            <li>
+              <a href={`${info}#${testo.info.ancore.privacy}`}>{testo.piede.privacy}</a>
+            </li>
+          </>
+        )
+      }
+    </ul>
+
+    <p class="piede-note">
+      © {anno} {sito.nome}. {testo.piede.diritti}{shopAperto && ` ${testo.piede.stripe}`}
+    </p>
+
+    <p class="piede-crediti">
+      {testo.piede.sitoDi}{' '}
+      <a href={sito.crediti.github} target="_blank" rel="noopener">
+        {sito.crediti.nome}<span class="sr-only"> (GitHub) {testo.nuovaScheda}</span>
+      </a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .piede {
+    position: relative;
+    margin-top: 40px;
+    background: var(--nero);
+    color: var(--panna);
+  }
+
+  /* bordo a zig-zag */
+  .piede::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background:
+      linear-gradient(to top right, var(--nero) 50%, transparent 50%) 0 0 / 24px 12px repeat-x,
+      linear-gradient(to top left, var(--nero) 50%, transparent 50%) 0 0 / 24px 12px repeat-x;
+  }
+
+  .piede-dentro {
+    display: grid;
+    gap: 28px;
+    padding-block: 48px 32px;
+  }
+
+  .piede-marchio {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .piede-marchio img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid var(--panna);
+  }
+
+  .piede-nome {
+    margin: 0;
+  }
+
+  /* la scritta della copertina (marchio/scritta-costolax.webp) */
+  .piede-marchio .piede-nome img {
+    width: 150px;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    filter: drop-shadow(3px 3px 0 var(--magenta));
+  }
+
+  .piede-motto {
+    margin: 0.2em 0 0;
+    font-family: var(--font-mano);
+    color: var(--giallo);
+  }
+
+  .piede-link {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .piede-link a {
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .piede-link a:hover {
+    color: var(--giallo);
+  }
+
+  .piede-note {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  .piede-crediti {
+    margin: -16px 0 0;
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .piede-crediti a {
+    text-decoration-color: var(--magenta);
+    text-underline-offset: 3px;
+  }
+
+  .piede-crediti a:hover {
+    color: var(--giallo);
+    opacity: 1;
+  }
+</style>

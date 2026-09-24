@@ -1,0 +1,293 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProdottoCard from '../ProdottoCard.astro';
+import Testo from '../Testo.astro';
+import Ingrandibile from '../Ingrandibile.astro';
+import { inclina, ordinati, tr } from '../../lib/contenuti';
+import { url } from '../../lib/utils';
+import { link, t, type Lingua } from '../../i18n/ui';
+
+interface Props {
+  fumetto: CollectionEntry<'fumetti'>;
+  lingua: Lingua;
+}
+
+const { fumetto, lingua } = Astro.props;
+const testo = t(lingua).fumetti;
+const dati = fumetto.data;
+const { copertina } = dati;
+const titolo = tr(dati, 'titolo', lingua);
+const sottotitolo = tr(dati, 'sottotitolo', lingua);
+const uscita = tr(dati, 'uscita', lingua);
+const formato = tr(dati, 'formato', lingua);
+const colori = tr(dati, 'colori', lingua);
+const { pagine } = dati;
+const pdfGratis = dati.pdfGratis ? url(dati.pdfGratis) : undefined;
+const tavole = dati.tavole.map((tavola) => ({ immagine: tavola.immagine, alt: tr(tavola, 'alt', lingua) }));
+
+const autori = await Promise.all(
+  dati.autori.map(async (autore) => ({ ruolo: tr(autore, 'ruolo', lingua), artista: await getEntry(autore.artista) })),
+);
+// Gli autori con lo stesso ruolo compaiono insieme sotto un'unica voce (es. "Artisti: A, B, C").
+const crediti = Object.entries(Object.groupBy(autori, (a) => a.ruolo)).map(([ruolo, gruppo]) => ({
+  ruolo,
+  artisti: (gruppo ?? []).map((a) => a.artista),
+}));
+const prodotti = (await ordinati('prodotti')).filter((p) => p.data.fumetto?.id === fumetto.id);
+const sommario = await Promise.all(
+  dati.sommario.map(async (voce) => {
+    const storia = await getEntry(voce.storia);
+    return { storia, titolo: tr(voce, 'titolo', lingua) ?? tr(storia.data, 'titolo', lingua), nota: tr(voce, 'nota', lingua) };
+  }),
+);
+---
+
+<Base
+  lingua={lingua}
+  sezione="fumetti"
+  id={fumetto.id}
+  titolo={titolo}
+  descrizione={testo.descrizioneScheda(`${titolo}${sottotitolo ? ` · ${sottotitolo}` : ''}`)}
+  immagine={copertina}
+>
+  <article class="wrap scheda sezione">
+    <div class="riquadro scheda-copertina inclina-s">
+      <Ingrandibile src={copertina} alt={tr(dati, 'copertinaAlt', lingua)} lingua={lingua} widths={[920, 1400, 1800]} sizes="(max-width: 800px) 92vw, 460px" loading="eager" />
+    </div>
+
+    <div class="scheda-testo">
+      {uscita && <span class="didascalia">{uscita}</span>}
+      <h1>{titolo}</h1>
+      {sottotitolo && <p class="sottotitolo">{sottotitolo}</p>}
+
+      <dl class="crediti">
+        {
+          crediti.map(({ ruolo, artisti }) => (
+            <div>
+              <dt>{ruolo}</dt>
+              <dd>
+                {artisti.map((artista, i) => (
+                  <>
+                    {i > 0 && ', '}
+                    <a href={link(lingua, 'artisti', artista.id)}>{artista.data.nome}</a>
+                  </>
+                ))}
+              </dd>
+            </div>
+          ))
+        }
+        {
+          pagine && (
+            <div>
+              <dt>{testo.pagine}</dt>
+              <dd>{pagine}</dd>
+            </div>
+          )
+        }
+        {
+          colori && (
+            <div>
+              <dt>{testo.colori}</dt>
+              <dd>{colori}</dd>
+            </div>
+          )
+        }
+        {
+          formato && (
+            <div>
+              <dt>{testo.formato}</dt>
+              <dd>{formato}</dd>
+            </div>
+          )
+        }
+      </dl>
+
+      <div class="prosa">
+        <Testo voce={fumetto} lingua={lingua} />
+      </div>
+
+      {
+        sommario.length > 0 && (
+          <div class="sommario">
+            <h2>{testo.sommario}</h2>
+            <ol>
+              {sommario.map(({ storia, titolo, nota }) => (
+                <li>
+                  <a href={`${link(lingua, 'storie')}#${storia.id}`}>{titolo}</a>
+                  {nota && <span class="nota-sommario"> ({nota})</span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )
+      }
+
+      {
+        dati.inArrivo && (
+          <>
+            <p class="nota in-arrivo">{testo.inArrivo}</p>
+            <div class="azioni">
+              <a class="btn" href={link(lingua, 'eventi')}>
+                {testo.vediFiere}
+              </a>
+              <a class="btn btn-chiaro" href={link(lingua, 'shop')}>
+                {testo.vaiAlloShop}
+              </a>
+            </div>
+          </>
+        )
+      }
+
+      {
+        pdfGratis && (
+          <div class="azioni">
+            <a class="btn" href={pdfGratis} download>
+              {testo.scaricaGratis}
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </article>
+
+  {
+    tavole.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.anteprima}</span>
+        </h2>
+        <div class="griglia griglia-larga">
+          {tavole.map((tavola, i) => (
+            <div class:list={['riquadro', 'tavola-anteprima', inclina(i + 1) && `inclina-${inclina(i + 1)}`]}>
+              <Ingrandibile src={tavola.immagine} alt={tavola.alt} lingua={lingua} widths={[760, 1200, 1600]} sizes="(max-width: 700px) 92vw, 380px" />
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    prodotti.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.portaloACasa}</span>
+        </h2>
+        <div class="griglia">
+          {prodotti.map((prodotto, i) => (
+            <ProdottoCard prodotto={prodotto} lingua={lingua} inclina={inclina(i)} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .scheda {
+    display: grid;
+    grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+  }
+
+  .scheda-copertina {
+    overflow: hidden;
+  }
+
+  .scheda-testo h1 {
+    margin-top: 0.3em;
+  }
+
+  .sottotitolo {
+    margin: -0.2em 0 1em;
+    font-family: var(--font-mano);
+    font-size: 1.5rem;
+    color: var(--magenta);
+  }
+
+  .crediti {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    margin: 0 0 24px;
+    padding: 14px 18px;
+    border: 2px solid var(--inchiostro);
+    background: var(--bianco);
+  }
+
+  .crediti dt {
+    font-family: var(--font-mano);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--inchiostro-2);
+  }
+
+  .crediti dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .crediti a {
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+  }
+
+  .sommario {
+    margin: 0 0 24px;
+    padding: 16px 20px 18px;
+    border: 2px solid var(--inchiostro);
+    background: var(--bianco);
+    box-shadow: 4px 4px 0 var(--magenta);
+  }
+
+  .sommario h2 {
+    margin: 0 0 10px;
+    font-size: 1.3rem;
+  }
+
+  .sommario ol {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.4em;
+  }
+
+  .sommario li::marker {
+    font-family: var(--font-titoli);
+    color: var(--magenta);
+  }
+
+  .sommario a {
+    font-weight: 700;
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+  }
+
+  .nota-sommario {
+    font-family: var(--font-mano);
+    color: var(--inchiostro-2);
+  }
+
+  .in-arrivo {
+    margin: 0 0 18px;
+    font-family: var(--font-mano);
+    font-size: 1.1rem;
+  }
+
+  .tavola-anteprima {
+    align-self: start;
+    overflow: hidden;
+  }
+
+  @media (max-width: 800px) {
+    .scheda {
+      grid-template-columns: 1fr;
+    }
+
+    .scheda-copertina {
+      max-width: 420px;
+    }
+  }
+</style>

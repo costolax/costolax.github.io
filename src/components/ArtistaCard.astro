@@ -1,0 +1,47 @@
+---
+// Scheda di un autore: è tutta un link alla sua pagina (lì il ritratto si può ingrandire).
+import type { CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import { tr } from '../lib/contenuti';
+import { link, type Lingua } from '../i18n/ui';
+
+interface Props {
+  artista: CollectionEntry<'artisti'>;
+  lingua: Lingua;
+  inclina?: 's' | 'd';
+  // 'eager' per le schede in cima alla pagina, così l'immagine parte subito
+  loading?: 'eager' | 'lazy';
+}
+
+const { artista, lingua, inclina, loading } = Astro.props;
+const dati = artista.data;
+const { nome, immagine } = dati;
+---
+
+<a class:list={['riquadro', 'artista', inclina && `inclina-${inclina}`]} href={link(lingua, 'artisti', artista.id)}>
+  <span class="didascalia">{tr(dati, 'ruolo', lingua)}</span>
+  <div class="riquadro-img artista-img">
+    <Picture formats={['avif']} fallbackFormat="webp" src={immagine} alt={tr(dati, 'immagineAlt', lingua)} widths={[640, 900, 1200]} sizes="(max-width: 600px) 46vw, 300px" loading={loading} />
+  </div>
+  <h3>{nome}</h3>
+</a>
+
+<style>
+  /* tutti i ritratti nello stesso riquadro 4:5, ritagliati partendo dall'alto */
+  .artista {
+    align-self: start;
+  }
+
+  .artista-img {
+    aspect-ratio: 4 / 5;
+  }
+
+  .artista-img :global(img) {
+    object-position: top;
+  }
+
+  h3 {
+    margin: 0;
+    padding: 14px 16px 16px;
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+// Specifiche tecniche di un numero (pagine, colori, formato) in una riga di etichette.
+// Si scrivono una volta sola nel file del numero e compaiono in home, nelle schede e nello shop.
+import type { CollectionEntry } from 'astro:content';
+import { tr } from '../lib/contenuti';
+import { t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  fumetto: CollectionEntry<'fumetti'>;
+  lingua: Lingua;
+  class?: string;
+}
+
+const { fumetto, lingua, class: classe } = Astro.props;
+const testo = t(lingua).fumetti;
+const dati = fumetto.data;
+const voci = [
+  dati.pagine && { etichetta: testo.pagine, valore: String(dati.pagine) },
+  tr(dati, 'colori', lingua) && { etichetta: testo.colori, valore: tr(dati, 'colori', lingua) },
+  tr(dati, 'formato', lingua) && { etichetta: testo.formato, valore: tr(dati, 'formato', lingua) },
+].filter((v): v is { etichetta: string; valore: string } => Boolean(v));
+---
+
+{
+  voci.length > 0 && (
+    <dl class:list={['specifiche', classe]}>
+      {voci.map((v) => (
+        <div>
+          <dt>{v.etichetta}</dt>
+          <dd>{v.valore}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+<style>
+  .specifiche {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .specifiche div {
+    display: flex;
+    gap: 0.35em;
+    align-items: baseline;
+    padding: 0.15em 0.55em;
+    border: 1.5px solid var(--inchiostro);
+    border-radius: 0.8em;
+    background: var(--bianco);
+    color: var(--inchiostro);
+    font-size: 0.85rem;
+  }
+
+  /* se lo spazio non basta, il valore va sotto il nome invece di spezzarsi a metà */
+  .specifiche div {
+    flex-wrap: wrap;
+    column-gap: 0.35em;
+    row-gap: 0;
+  }
+
+  .specifiche dd {
+    white-space: nowrap;
+  }
+
+  /* nelle schede strette (telefono) le etichette si rimpiccioliscono invece di andare a capo */
+  @media (max-width: 600px) {
+    .specifiche div {
+      padding: 0.1em 0.45em;
+      font-size: 0.72rem;
+    }
+  }
+
+  .specifiche dt {
+    font-family: var(--font-mano);
+    font-size: 0.8em;
+    text-transform: uppercase;
+    color: var(--inchiostro-2);
+  }
+
+  .specifiche dd {
+    margin: 0;
+    font-weight: 700;
+  }
+</style>

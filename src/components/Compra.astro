@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { euro } from '../lib/utils';
+import { tr } from '../lib/contenuti';
+import { t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  prodotto: CollectionEntry<'prodotti'>;
+  lingua: Lingua;
+  class?: string;
+}
+
+const { prodotto, lingua, class: classe } = Astro.props;
+const { prezzo, stripeLink, disponibile } = prodotto.data;
+const nome = tr(prodotto.data, 'nome', lingua);
+const testo = t(lingua).compra;
+const prezzoTesto = euro(prezzo, lingua);
+
+// La pagina di pagamento di Stripe si apre nella stessa lingua del sito.
+let pagamento: string | undefined;
+if (stripeLink) {
+  const indirizzo = new URL(stripeLink);
+  indirizzo.searchParams.set('locale', lingua);
+  pagamento = indirizzo.href;
+}
+---
+
+{
+  !disponibile ? (
+    <span class:list={['btn', classe]} aria-disabled="true">
+      {testo.esaurito}
+    </span>
+  ) : pagamento ? (
+    <a class:list={['btn', classe]} href={pagamento} rel="noopener" aria-label={testo.etichetta(nome, prezzoTesto)}>
+      {testo.compra} · {prezzoTesto}
+    </a>
+  ) : (
+    <span class:list={['btn', classe]} aria-disabled="true">
+      {testo.inArrivo}
+    </span>
+  )
+}

@@ -1,0 +1,538 @@
+/* ==========================================================
+   COSTOLAX — stile globale
+   Carta avorio, inchiostro nero, retini e colori delle tavole.
+   ========================================================== */
+
+:root {
+  /* colori presi dalle tavole */
+  --carta: #f4eee2;
+  --carta-scura: #e7dac2;
+  --bianco: #fffcf5;
+  --inchiostro: #151212;
+  --inchiostro-2: #3d3535;
+  --magenta: #a8238a;
+  --sangue: #c8102e;
+  --lilla: #9b86c0;
+  --giallo: #f5d31c;
+  /* nero e panna fissi: non cambiano col tema (fasce scure, testo su giallo e magenta) */
+  --nero: #151212;
+  --panna: #f4eee2;
+  /* sottolineatura dei titoli di sezione */
+  --evidenziatore: var(--giallo);
+
+  /* caratteri */
+  --font-titoli: 'Bowlby One', 'Arial Black', Impact, sans-serif;
+  --font-mano: 'Permanent Marker', 'Comic Sans MS', cursive;
+  --font-testo: 'Space Grotesk Variable', system-ui, sans-serif;
+
+  /* misure */
+  --tratto: 3px;
+  --ombra: 6px;
+  --gutter: clamp(12px, 2vw, 20px);
+  --larghezza: 1200px;
+
+  color-scheme: light;
+}
+
+/* ---------- tema scuro ----------
+   Di base segue il tema del dispositivo; il pulsante in alto lo forza (data-tema su <html>).
+   Carta e inchiostro si scambiano: pagina scura, tratti e testo color panna. */
+
+:root[data-tema='scuro'] {
+  --carta: #1a1616;
+  --carta-scura: #2b2424;
+  --bianco: #241f1f;
+  --inchiostro: #efe6d6;
+  --inchiostro-2: #bfb4a4;
+  --magenta: #c93fa9;
+  --lilla: #6d5a93;
+  --evidenziatore: var(--magenta);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='chiaro']) {
+    --carta: #1a1616;
+    --carta-scura: #2b2424;
+    --bianco: #241f1f;
+    --inchiostro: #efe6d6;
+    --inchiostro-2: #bfb4a4;
+    --magenta: #c93fa9;
+    --lilla: #6d5a93;
+    --evidenziatore: var(--magenta);
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--inchiostro);
+  font-family: var(--font-testo);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  background-color: var(--carta);
+  /* grana della carta */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+main {
+  flex: 1;
+}
+
+/* le vignette inclinate e le loro ombre non devono mai far scorrere la pagina di lato (telefono) */
+body {
+  overflow-x: clip;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--magenta);
+  color: var(--panna);
+}
+
+:focus-visible {
+  outline: 3px dashed var(--magenta);
+  outline-offset: 3px;
+}
+
+.wrap {
+  width: min(100% - 32px, var(--larghezza));
+  margin-inline: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- titoli ---------- */
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-titoli);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.4em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  /* stampa fuori registro */
+  text-shadow: 3px 3px 0 var(--magenta);
+}
+
+h2 {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+}
+
+h3 {
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.titolo-sezione {
+  display: inline-block;
+  padding: 0 0.15em;
+  background: linear-gradient(transparent 58%, var(--evidenziatore) 58%, var(--evidenziatore) 92%, transparent 92%);
+}
+
+.sezione {
+  padding-block: clamp(40px, 7vw, 80px);
+}
+
+.sezione-testa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 28px;
+}
+
+.link-freccia {
+  font-family: var(--font-mano);
+  font-size: 1.15rem;
+  text-decoration: none;
+  border-bottom: 3px solid var(--magenta);
+}
+
+.link-freccia:hover {
+  color: var(--magenta);
+}
+
+/* ---------- riquadri (vignette) ---------- */
+
+.riquadro {
+  position: relative;
+  display: block;
+  background: var(--bianco);
+  border: var(--tratto) solid var(--inchiostro);
+  box-shadow: var(--ombra) var(--ombra) 0 var(--inchiostro);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* retino che compare al passaggio del mouse */
+a.riquadro::after,
+.riquadro-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(var(--magenta) 24%, transparent 26%);
+  background-size: 7px 7px;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+a.riquadro,
+.riquadro-link {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+a.riquadro:hover,
+.riquadro-link:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: calc(var(--ombra) + 4px) calc(var(--ombra) + 4px) 0 var(--inchiostro);
+}
+
+a.riquadro:hover::after,
+.riquadro-link:hover::after {
+  opacity: 0.3;
+}
+
+.inclina-s {
+  rotate: -1deg;
+}
+
+.inclina-d {
+  rotate: 1deg;
+}
+
+/* I riquadri con un'immagine restano dritti: ruotata anche di 1°, un'immagine viene ricampionata
+   dal browser e diventa sfocata. L'inclinazione resta sui riquadri di solo testo. */
+.inclina-s:has(img),
+.inclina-d:has(img) {
+  rotate: none;
+}
+
+.riquadro-img {
+  overflow: hidden;
+  border-bottom: var(--tratto) solid var(--inchiostro);
+}
+
+.riquadro-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* didascalia gialla dei fumetti */
+.didascalia {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  background: var(--giallo);
+  color: var(--nero);
+  border: 2px solid var(--inchiostro);
+  font-family: var(--font-mano);
+  font-size: 0.95rem;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.riquadro > .didascalia {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  z-index: 2;
+}
+
+/* nuvoletta */
+.nuvoletta {
+  position: relative;
+  padding: 1em 1.3em;
+  background: var(--bianco);
+  border: var(--tratto) solid var(--inchiostro);
+  border-radius: 1.6em;
+  font-family: var(--font-mano);
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  line-height: 1.35;
+}
+
+.nuvoletta::before,
+.nuvoletta::after {
+  content: '';
+  position: absolute;
+  left: 2.2em;
+  border-style: solid;
+}
+
+.nuvoletta::before {
+  bottom: -22px;
+  border-width: 22px 14px 0 0;
+  border-color: var(--inchiostro) transparent transparent;
+}
+
+.nuvoletta::after {
+  bottom: -15px;
+  left: calc(2.2em + 3px);
+  border-width: 15px 9px 0 0;
+  border-color: var(--bianco) transparent transparent;
+}
+
+.nuvoletta p {
+  margin: 0;
+}
+
+/* scoppio (prezzi, numeri) */
+.scoppio {
+  filter: drop-shadow(2px 0 0 var(--inchiostro)) drop-shadow(-2px 0 0 var(--inchiostro))
+    drop-shadow(0 2px 0 var(--inchiostro)) drop-shadow(0 -2px 0 var(--inchiostro));
+}
+
+.scoppio > span {
+  display: grid;
+  place-items: center;
+  width: 5.4em;
+  aspect-ratio: 1;
+  padding: 0.9em;
+  white-space: nowrap;
+  background: var(--magenta);
+  color: var(--panna);
+  font-family: var(--font-titoli);
+  font-size: 0.95rem;
+  line-height: 1;
+  text-align: center;
+  clip-path: polygon(
+    50% 0%, 59% 13%, 75% 7%, 76% 23%, 93% 25%, 86% 40%, 100% 50%, 86% 60%, 93% 75%, 76% 77%,
+    75% 93%, 59% 87%, 50% 100%, 41% 87%, 25% 93%, 24% 77%, 7% 75%, 14% 60%, 0% 50%, 14% 40%,
+    7% 25%, 24% 23%, 25% 7%, 41% 13%
+  );
+}
+
+/* scoppio con una scritta lunga ("Ultima uscita"): va su due righe */
+.scoppio.lungo > span {
+  width: 6em;
+  white-space: normal;
+}
+
+/* timbro "venduto" */
+.timbro {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  z-index: 2;
+  translate: -50% -50%;
+  rotate: -14deg;
+  padding: 0.15em 0.5em;
+  border: 4px double var(--sangue);
+  background: rgb(255 252 245 / 0.85);
+  color: var(--sangue);
+  font-family: var(--font-titoli);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- pulsanti ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.65em 1.2em;
+  background: var(--inchiostro);
+  color: var(--carta);
+  border: var(--tratto) solid var(--inchiostro);
+  box-shadow: 4px 4px 0 var(--magenta);
+  font-family: var(--font-titoli);
+  font-size: 1rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--magenta);
+}
+
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--magenta);
+}
+
+.btn-giallo {
+  background: var(--giallo);
+  color: var(--nero);
+  box-shadow: 4px 4px 0 var(--inchiostro);
+}
+
+.btn-giallo:hover {
+  box-shadow: 6px 6px 0 var(--inchiostro);
+}
+
+.btn-giallo:active {
+  box-shadow: 0 0 0 var(--inchiostro);
+}
+
+.btn-chiaro {
+  background: var(--bianco);
+  color: var(--inchiostro);
+  box-shadow: 4px 4px 0 var(--inchiostro);
+}
+
+.btn-chiaro:hover {
+  box-shadow: 6px 6px 0 var(--inchiostro);
+}
+
+.btn[aria-disabled='true'] {
+  background: var(--carta-scura);
+  color: var(--inchiostro-2);
+  border-style: dashed;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.azioni {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ---------- griglie ---------- */
+
+.griglia {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: calc(var(--gutter) + 12px);
+}
+
+/* su telefono due schede per riga (copertine e ritratti), invece di una a tutto schermo */
+@media (max-width: 600px) {
+  .griglia-compatta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 16px;
+  }
+
+  .griglia-compatta h3 {
+    font-size: 1rem;
+  }
+}
+
+.griglia-larga {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+
+/* ---------- testi lunghi ---------- */
+
+.prosa {
+  max-width: 65ch;
+  font-size: 1.1rem;
+}
+
+.prosa p {
+  margin: 0 0 1em;
+}
+
+.prosa h2 {
+  margin-top: 1.6em;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.prosa h3 {
+  margin-top: 1.4em;
+}
+
+.prosa ul,
+.prosa ol {
+  padding-left: 1.3em;
+}
+
+.prosa li + li {
+  margin-top: 0.3em;
+}
+
+.nota {
+  padding: 0.8em 1em;
+  border: 2px dashed var(--inchiostro);
+  background: var(--bianco);
+  font-size: 0.95rem;
+}
+
+/* ---------- intestazione di pagina ---------- */
+
+.testata {
+  padding-top: clamp(32px, 6vw, 64px);
+}
+
+.testata p {
+  max-width: 60ch;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+/* ---------- movimento ridotto ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  a.riquadro:hover,
+  .riquadro-link:hover,
+  .btn:hover,
+  .btn:active {
+    transform: none;
+  }
+}

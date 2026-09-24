@@ -1,0 +1,171 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Testo from './Testo.astro';
+import Ingrandibile from './Ingrandibile.astro';
+import { tr } from '../lib/contenuti';
+import { t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  evento: CollectionEntry<'eventi'>;
+  lingua: Lingua;
+  inclina?: 's' | 'd';
+  // Evento finito: riquadro più sobrio.
+  passato?: boolean;
+}
+
+const { evento, lingua, inclina, passato = false } = Astro.props;
+const testo = t(lingua).eventi;
+const dati = evento.data;
+const { inizio, fine, link, immagine } = dati;
+const luogo = tr(dati, 'luogo', lingua);
+const titolo = tr(dati, 'titolo', lingua);
+const citta = tr(dati, 'citta', lingua);
+const stand = tr(dati, 'stand', lingua);
+
+// Le date sono giorni interi: formattate in UTC per non spostarle di un giorno col fuso orario.
+const giorno = (d: Date) => new Intl.DateTimeFormat(testo.locale, { day: 'numeric', timeZone: 'UTC' }).format(d);
+const mese = (d: Date) => new Intl.DateTimeFormat(testo.locale, { month: 'short', timeZone: 'UTC' }).format(d);
+const completa = new Intl.DateTimeFormat(testo.locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const piuGiorni = fine && iso(fine) !== iso(inizio);
+const giorni = piuGiorni ? `${giorno(inizio)}–${giorno(fine)}` : giorno(inizio);
+const mesi = piuGiorni && mese(fine) !== mese(inizio) ? `${mese(inizio)}–${mese(fine)}` : mese(inizio);
+// formatRange unisce le parti uguali: "26–27 settembre 2026" invece di ripetere mese e anno.
+const date = piuGiorni ? completa.formatRange(inizio, fine) : completa.format(inizio);
+---
+
+<article class:list={['riquadro', 'evento', inclina && `inclina-${inclina}`, { passato }]}>
+  <div class="calendario" aria-hidden="true">
+    <span class="giorni">{giorni}</span>
+    <span class="mesi">{mesi}</span>
+    <span class="anno">{inizio.getUTCFullYear()}</span>
+  </div>
+
+  <div class="evento-testo">
+    <h3>{titolo}</h3>
+    <p class="dove">
+      <time datetime={iso(inizio)}>{date}</time> · {luogo}, {citta}
+    </p>
+    {stand && <p class="stand"><span class="didascalia">{testo.stand}</span> {stand}</p>}
+    <div class="prosa">
+      <Testo voce={evento} lingua={lingua} />
+    </div>
+    {
+      link && (
+        <a class="link-freccia" href={link} target="_blank" rel="noopener">
+          {testo.sitoEvento} →<span class="sr-only"> {t(lingua).nuovaScheda}</span>
+        </a>
+      )
+    }
+  </div>
+
+  {
+    immagine && (
+      <div class="riquadro-img evento-img" style={`aspect-ratio: ${immagine.width} / ${immagine.height}`}>
+        <Ingrandibile src={immagine} alt={tr(dati, 'immagineAlt', lingua) ?? ''} lingua={lingua} widths={[480, 640, 900]} sizes="(max-width: 700px) 92vw, 200px" />
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .evento {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: start;
+    padding: 20px;
+  }
+
+  .calendario {
+    display: grid;
+    justify-items: center;
+    min-width: 96px;
+    padding: 10px 12px;
+    border: 3px solid var(--inchiostro);
+    background: var(--magenta);
+    color: var(--panna);
+    box-shadow: 4px 4px 0 var(--inchiostro);
+    rotate: -3deg;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .giorni {
+    font-family: var(--font-titoli);
+    font-size: 1.7rem;
+  }
+
+  .mesi {
+    font-family: var(--font-mano);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+  }
+
+  .anno {
+    font-size: 0.8rem;
+    opacity: 0.85;
+  }
+
+  .evento-testo h3 {
+    margin: 0;
+  }
+
+  .dove {
+    margin: 0.3em 0 0;
+    font-family: var(--font-mano);
+    color: var(--magenta);
+  }
+
+  .stand {
+    margin: 0.6em 0 0;
+  }
+
+  .stand .didascalia {
+    margin-right: 0.3em;
+  }
+
+  .evento-testo .prosa {
+    margin-top: 0.6em;
+  }
+
+  .evento-testo .prosa :global(p:last-child) {
+    margin-bottom: 0.4em;
+  }
+
+  .evento-img {
+    width: 200px;
+    border: 2px solid var(--inchiostro);
+  }
+
+  .passato {
+    background: var(--carta-scura);
+  }
+
+  .passato .calendario {
+    background: var(--inchiostro-2);
+  }
+
+  @media (max-width: 700px) {
+    .evento {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .evento-img {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: 320px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .evento {
+      grid-template-columns: 1fr;
+    }
+
+    .calendario {
+      justify-self: start;
+    }
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+// Immagine che si apre a schermo intero quando la clicchi (visualizzatore in Base.astro).
+// Mostra l'immagine come <Picture> (AVIF, con WebP per i browser vecchi) e prepara le versioni grandi
+// (1600 e 2400 px) per il visualizzatore, che sceglie quella che basta per lo schermo.
+// Da usare per le immagini che non sono già un link.
+import type { ImageMetadata } from 'astro';
+import { Picture, getImage } from 'astro:assets';
+import { t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  lingua: Lingua;
+  widths: number[];
+  sizes: string;
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  style?: string;
+}
+
+const { src, alt, lingua, widths, sizes, loading, fetchpriority, style } = Astro.props;
+const testo = t(lingua);
+
+// versioni grandi: "url larghezza, url larghezza" (la più piccola prima)
+const larghezze = [...new Set([1600, 2400].map((w) => Math.min(src.width, w)))];
+const grandi = async (format: 'avif' | 'webp') =>
+  (await Promise.all(larghezze.map((width) => getImage({ src, width, format })))).map((img, i) => `${img.src} ${larghezze[i]}`).join(', ');
+const [grandeAvif, grandeWebp] = await Promise.all([grandi('avif'), grandi('webp')]);
+
+// per chi usa un lettore di schermo: cosa fa il pulsante e, se c'è, cosa mostra l'immagine
+const etichetta = alt ? `${testo.ingrandisci}: ${alt}` : testo.ingrandisciTavola;
+---
+
+<button
+  type="button"
+  class="ingrandibile"
+  data-grande-avif={grandeAvif}
+  data-grande={grandeWebp}
+  data-proporzioni={src.width / src.height}
+  data-alt={alt}
+  aria-label={etichetta}
+>
+  <Picture
+    src={src}
+    alt={alt}
+    formats={['avif']}
+    fallbackFormat="webp"
+    widths={widths}
+    sizes={sizes}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    style={style}
+  />
+</button>
+
+<style>
+  /* il pulsante è invisibile: riempie il riquadro e lascia l'immagine com'era */
+  .ingrandibile {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: zoom-in;
+  }
+
+  .ingrandibile:focus-visible {
+    outline: 3px dashed var(--magenta);
+    outline-offset: -6px;
+  }
+</style>

@@ -1,0 +1,391 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/marchio/logo.png';
+import scritta from '../assets/marchio/scritta-costolax.webp';
+import { sito } from '../site.config';
+import { eventiDivisi, tr } from '../lib/contenuti';
+import { link, lingue, t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+  versioni: { lingua: Lingua; href: string }[];
+}
+
+const { lingua, versioni } = Astro.props;
+const testo = t(lingua);
+const percorso = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const menu = (['fumetti', 'artisti', 'storie', 'eventi', 'shop'] as const).map((sezione) => ({
+  label: testo.menu[sezione],
+  href: link(lingua, sezione),
+}));
+// Nel nastro scorrevole le prossime fiere, con città e date (es. "Treviso Comic Book Festival · Treviso 26–27 set").
+const date = new Intl.DateTimeFormat(testo.eventi.locale, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const fiere = (await eventiDivisi()).prossimi.map((e) => {
+  const giorni = e.data.fine ? date.formatRange(e.data.inizio, e.data.fine) : date.format(e.data.inizio);
+  return `${tr(e.data, 'titolo', lingua)} · ${tr(e.data, 'citta', lingua)} ${giorni}`;
+});
+const nastro = [testo.motto, ...fiere, ...testo.nastro];
+---
+
+<div class="nastro" aria-hidden="true">
+  <div class="nastro-scorre">
+    {
+      [0, 1].map(() => (
+        <span>
+          {nastro.map((voce) => (
+            <>
+              <span>{voce}</span>
+              <span class="stella"></span>
+            </>
+          ))}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<header class="testa wrap">
+  <a class="marchio" href={link(lingua, 'home')} aria-label={`${sito.nome}, ${testo.tornaAllaHome}`}>
+    <Image src={logo} alt="" width={60} height={60} densities={[1, 2, 3]} loading="eager" />
+    <Image class="marchio-nome" src={scritta} alt="" width={140} densities={[1, 2, 3]} loading="eager" />
+  </a>
+
+  <div class="testa-destra">
+    <nav aria-label={testo.menuPrincipale}>
+      <ul>
+        {
+          menu.map((voce) => (
+            <li>
+              <a href={voce.href} aria-current={percorso.startsWith(voce.href) ? 'page' : undefined}>
+                {voce.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button class="tema" type="button" aria-pressed="false" hidden>
+      <span class="sr-only">{testo.temaScuro}</span>
+      <span class="tema-icona luna" aria-hidden="true"></span>
+      <span class="tema-icona sole" aria-hidden="true"></span>
+    </button>
+
+    <ul class="lingue" aria-label={testo.sceltaLingua}>
+      {
+        versioni.map((v) => (
+          <li>
+            <a href={v.href} hreflang={v.lingua} lang={v.lingua} aria-current={v.lingua === lingua ? 'true' : undefined}>
+              <span aria-hidden="true">{v.lingua.toUpperCase()}</span>
+              <span class="sr-only">{lingue[v.lingua]}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>
+
+<script>
+  // Pulsante chiaro/scuro: senza una scelta salvata la pagina segue il tema del dispositivo.
+  const pulsante = document.querySelector<HTMLButtonElement>('.tema');
+  const radice = document.documentElement;
+  const sistemaScuro = matchMedia('(prefers-color-scheme: dark)');
+  const scuro = () => (radice.dataset.tema ? radice.dataset.tema === 'scuro' : sistemaScuro.matches);
+  const aggiorna = () => pulsante?.setAttribute('aria-pressed', String(scuro()));
+
+  if (pulsante) {
+    pulsante.hidden = false;
+    aggiorna();
+    sistemaScuro.addEventListener('change', aggiorna);
+    pulsante.addEventListener('click', () => {
+      const tema = scuro() ? 'chiaro' : 'scuro';
+      radice.dataset.tema = tema;
+      try {
+        localStorage.setItem('tema', tema);
+      } catch {}
+      aggiorna();
+    });
+  }
+</script>
+
+<style>
+  .nastro {
+    overflow: hidden;
+    background: var(--nero);
+    color: var(--panna);
+    font-family: var(--font-titoli);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    padding: 6px 0;
+  }
+
+  .nastro-scorre {
+    display: inline-flex;
+    animation: scorri 40s linear infinite;
+  }
+
+  .nastro-scorre > span {
+    display: inline-flex;
+    gap: 1.2em;
+    padding-right: 1.2em;
+  }
+
+  .stella {
+    align-self: center;
+    width: 0.8em;
+    height: 0.8em;
+    background: var(--giallo);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+
+  @keyframes scorri {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .testa {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding-block: 18px;
+  }
+
+  .marchio {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+  }
+
+  .marchio img {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--inchiostro);
+    border-radius: 50%;
+    box-shadow: 3px 3px 0 var(--magenta);
+    transition: translate 0.2s ease;
+  }
+
+  /* niente rotazioni sulle immagini: il browser le ammorbidirebbe (sfocate) */
+  .marchio:hover img {
+    translate: 0 -2px;
+  }
+
+  /* la scritta della copertina (marchio/scritta-costolax.webp) */
+  .marchio .marchio-nome {
+    width: 140px;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    /* contorno nero e ombra magenta: le lettere bianche restano leggibili sulla carta chiara */
+    filter: drop-shadow(1px 0 0 var(--nero)) drop-shadow(-1px 0 0 var(--nero)) drop-shadow(0 1px 0 var(--nero))
+      drop-shadow(0 -1px 0 var(--nero)) drop-shadow(3px 3px 0 var(--magenta));
+  }
+
+  .testa-destra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px 24px;
+  }
+
+  .tema {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 2px solid var(--inchiostro);
+    box-shadow: 3px 3px 0 var(--inchiostro);
+    background: var(--bianco);
+    color: var(--inchiostro);
+    cursor: pointer;
+  }
+
+  .tema[hidden] {
+    display: none;
+  }
+
+  .tema:hover {
+    background: var(--giallo);
+    color: var(--nero);
+  }
+
+  .tema-icona {
+    grid-area: 1 / 1;
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+  }
+
+  /* luna: cerchio con un morso */
+  .luna {
+    border-radius: 50%;
+    mask: radial-gradient(circle at 72% 30%, transparent 42%, #000 43%);
+  }
+
+  /* sole: stella a otto punte */
+  .sole {
+    clip-path: polygon(
+      50% 0%, 61% 24%, 85% 15%, 76% 39%, 100% 50%, 76% 61%, 85% 85%, 61% 76%,
+      50% 100%, 39% 76%, 15% 85%, 24% 61%, 0% 50%, 24% 39%, 15% 15%, 39% 24%
+    );
+  }
+
+  /* in chiaro si mostra la luna (passa allo scuro), in scuro il sole */
+  .tema[aria-pressed='true'] .luna,
+  .tema[aria-pressed='false'] .sole {
+    visibility: hidden;
+  }
+
+  .lingue {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 2px solid var(--inchiostro);
+    box-shadow: 3px 3px 0 var(--inchiostro);
+    background: var(--bianco);
+  }
+
+  .lingue li + li {
+    border-left: 2px solid var(--inchiostro);
+  }
+
+  .lingue a {
+    display: block;
+    padding: 0.3em 0.55em;
+    font-family: var(--font-titoli);
+    font-size: 0.8rem;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .lingue a:hover {
+    background: var(--giallo);
+    color: var(--nero);
+  }
+
+  .lingue a[aria-current='true'] {
+    background: var(--inchiostro);
+    color: var(--carta);
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  nav a {
+    display: inline-block;
+    padding: 0.35em 0.6em;
+    border: 2px solid transparent;
+    font-family: var(--font-titoli);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+  }
+
+  nav a:hover {
+    background: var(--giallo);
+    color: var(--nero);
+    border-color: var(--inchiostro);
+    rotate: -2deg;
+  }
+
+  nav a[aria-current='page'] {
+    background: var(--magenta);
+    color: var(--panna);
+    border-color: var(--inchiostro);
+    box-shadow: 3px 3px 0 var(--inchiostro);
+    rotate: -2deg;
+  }
+
+  /* telefono: logo, tema e lingua sulla stessa riga; sotto il menu su un'unica riga */
+  @media (max-width: 760px) {
+    .testa {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-areas:
+        'marchio tema lingue'
+        'nav nav nav';
+      align-items: center;
+      gap: 12px 10px;
+      padding-block: 12px 10px;
+    }
+
+    .testa-destra {
+      display: contents;
+    }
+
+    .marchio {
+      grid-area: marchio;
+      gap: 10px;
+    }
+
+    .marchio img {
+      width: 46px;
+      height: 46px;
+    }
+
+    .marchio .marchio-nome {
+      width: 112px;
+    }
+
+    .tema {
+      grid-area: tema;
+    }
+
+    .lingue {
+      grid-area: lingue;
+    }
+
+    nav {
+      grid-area: nav;
+      margin-inline: -16px;
+      border-block: 2px solid var(--inchiostro);
+      background: var(--bianco);
+    }
+
+    /* le voci stanno su una riga; se lo schermo è strettissimo, la riga scorre di lato */
+    nav ul {
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      gap: 0;
+      padding: 6px 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    nav ul::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* la misura segue la larghezza dello schermo, così tutte le voci stanno in vista (anche in inglese) */
+    nav a {
+      padding: 0.35em 0.4em;
+      font-size: min(0.82rem, 3.05vw);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    nav a:hover,
+    nav a[aria-current='page'] {
+      rotate: 0deg;
+      box-shadow: 2px 2px 0 var(--inchiostro);
+    }
+  }
+</style>

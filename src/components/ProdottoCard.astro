@@ -1,0 +1,106 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import Compra from './Compra.astro';
+import Ingrandibile from './Ingrandibile.astro';
+import Specifiche from './Specifiche.astro';
+import { euro } from '../lib/utils';
+import { tr } from '../lib/contenuti';
+import { t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  prodotto: CollectionEntry<'prodotti'>;
+  lingua: Lingua;
+  inclina?: 's' | 'd';
+}
+
+const { prodotto, lingua, inclina } = Astro.props;
+const dati = prodotto.data;
+const { tipo, prezzo, immagine, disponibile } = dati;
+const nome = tr(dati, 'nome', lingua);
+const dettagli = tr(dati, 'dettagli', lingua) ?? [];
+const testo = t(lingua);
+const fumetto = dati.fumetto ? await getEntry(dati.fumetto) : undefined;
+const timbro = disponibile ? null : tipo === 'originale' ? testo.compra.venduto : testo.compra.esaurito;
+---
+
+<article class:list={['riquadro', 'prodotto', inclina && `inclina-${inclina}`]} data-tipo={tipo}>
+  <span class="didascalia">{testo.tipi[tipo]}</span>
+  <div class="scoppio prezzo" aria-hidden="true"><span>{euro(prezzo, lingua)}</span></div>
+  {timbro && <span class="timbro">{timbro}</span>}
+
+  <div class="riquadro-img prodotto-img" style={`aspect-ratio: ${immagine.width} / ${immagine.height}`}>
+    <Ingrandibile src={immagine} alt={tr(dati, 'immagineAlt', lingua)} lingua={lingua} widths={[640, 900, 1200]} sizes="(max-width: 600px) 92vw, 300px" />
+  </div>
+
+  <div class="prodotto-testo">
+    <h3>{nome}</h3>
+    {fumetto && <Specifiche fumetto={fumetto} lingua={lingua} />}
+    {
+      dettagli.length > 0 && (
+        <ul class="dettagli">
+          {dettagli.map((d) => (
+            <li>{d}</li>
+          ))}
+        </ul>
+      )
+    }
+    <Compra prodotto={prodotto} lingua={lingua} class="prodotto-compra" />
+  </div>
+</article>
+
+<style>
+  .prodotto {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .prezzo {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    z-index: 3;
+    rotate: 10deg;
+  }
+
+  @media (max-width: 600px) {
+    .prezzo {
+      top: -14px;
+      right: -6px;
+    }
+  }
+
+
+  .prodotto-testo {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 16px 18px;
+  }
+
+  .prodotto-testo h3 {
+    margin: 0;
+  }
+
+  .dettagli {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+  }
+
+  .dettagli li {
+    padding: 0.1em 0.5em;
+    border: 1.5px solid var(--inchiostro);
+    border-radius: 0.8em;
+  }
+
+  .prodotto-testo :global(.prodotto-compra) {
+    margin-top: auto;
+    width: 100%;
+  }
+</style>

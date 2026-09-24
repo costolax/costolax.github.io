@@ -1,0 +1,78 @@
+---
+import Base from '../../layouts/Base.astro';
+import Testata from '../Testata.astro';
+import decorazione from '../../assets/tavole/copertina-intro.webp';
+import EventoCard from '../EventoCard.astro';
+import { sito } from '../../site.config';
+import { eventiDivisi, inclina } from '../../lib/contenuti';
+import { t, type Lingua } from '../../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const testo = t(lingua).eventi;
+const { prossimi, passati } = await eventiDivisi();
+---
+
+<Base lingua={lingua} sezione="eventi" titolo={testo.titolo} descrizione={testo.descrizione}>
+  <Testata decorazione={decorazione} lingua={lingua} inquadratura="50% 45%">
+    <h1>{testo.titolo}</h1>
+    <p>{testo.intro}</p>
+  </Testata>
+
+  <section class="wrap sezione">
+    <h2><span class="titolo-sezione">{testo.prossimi}</span></h2>
+    {
+      prossimi.length > 0 ? (
+        <div class="elenco">
+          {prossimi.map((evento, i) => (
+            <EventoCard evento={evento} lingua={lingua} inclina={inclina(i)} />
+          ))}
+        </div>
+      ) : (
+        <div class="nuvoletta nessuno">
+          <p>
+            {testo.nessuno}{' '}
+            <a href={sito.instagram} target="_blank" rel="noopener">
+              Instagram<span class="sr-only"> {t(lingua).nuovaScheda}</span>
+            </a>
+          </p>
+        </div>
+      )
+    }
+  </section>
+
+  {
+    passati.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.passati}</span>
+        </h2>
+        <div class="elenco passati">
+          {passati.map((evento) => (
+            <EventoCard evento={evento} lingua={lingua} passato />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .elenco {
+    display: grid;
+    gap: calc(var(--gutter) + 16px);
+    max-width: 900px;
+  }
+
+  .nessuno {
+    max-width: 560px;
+  }
+
+  .nessuno a {
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+  }
+</style>

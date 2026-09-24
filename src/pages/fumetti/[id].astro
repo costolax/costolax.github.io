@@ -1,0 +1,18 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Fumetto from '../../components/pagine/Fumetto.astro';
+
+export const getStaticPaths = (async () => {
+  const voci = await getCollection('fumetti');
+  return voci.map((fumetto) => ({ params: { id: fumetto.id }, props: { fumetto } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  fumetto: CollectionEntry<'fumetti'>;
+}
+
+const { fumetto } = Astro.props;
+---
+
+<Fumetto fumetto={fumetto} lingua="it" />

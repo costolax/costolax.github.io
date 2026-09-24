@@ -1,0 +1,201 @@
+---
+// Informazioni su spedizioni, resi, privacy e contatti: stanno nella pagina Shop, sotto i prodotti.
+import { sito } from '../site.config';
+import { euro } from '../lib/utils';
+import { tr } from '../lib/contenuti';
+import { t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const testo = t(lingua).info;
+const { ancore, voci } = testo;
+const it = lingua === 'it';
+const mailto = `mailto:${sito.email}`;
+---
+
+  <div class="wrap sezione prosa info">
+    <nav class="indice" aria-label={testo.inQuestaPagina}>
+      <a href={`#${ancore.spedizioni}`}>{voci.spedizioni}</a>
+      <a href={`#${ancore.resi}`}>{voci.resi}</a>
+      <a href={`#${ancore.privacy}`}>{voci.privacy}</a>
+      <a href={`#${ancore.contatti}`}>{voci.contatti}</a>
+    </nav>
+    <!-- TODO: testi di esempio, da completare e far verificare prima di aprire lo shop -->
+
+    <section id={ancore.spedizioni}>
+      <h2><span class="titolo-sezione">{voci.spedizioni}</span></h2>
+      {
+        it ? (
+          <p>Spediamo fumetti, stampe e tavole originali ben protetti, con numero di tracciamento.</p>
+        ) : (
+          <p>We ship comics, prints and original art well protected, with a tracking number.</p>
+        )
+      }
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{testo.zona}</th>
+            <th scope="col">{testo.costo}</th>
+            <th scope="col">{testo.tempi}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            sito.spedizioni.map((s) => (
+              <tr>
+                <td>{tr(s, 'zona', lingua)}</td>
+                <td>{euro(s.prezzo, lingua)}</td>
+                <td>{tr(s, 'tempi', lingua)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      {
+        it ? (
+          <p>
+            Il costo di spedizione viene aggiunto nella pagina di pagamento. I fumetti digitali (PDF) non hanno spese di
+            spedizione: il link per scaricarli arriva subito dopo il pagamento.
+          </p>
+        ) : (
+          <p>
+            Shipping is added on the payment page. Digital comics (PDF) have no shipping costs: the download link arrives
+            right after payment.
+          </p>
+        )
+      }
+    </section>
+
+    <section id={ancore.resi}>
+      <h2><span class="titolo-sezione">{it ? 'Resi e recesso' : 'Returns'}</span></h2>
+      {
+        it ? (
+          <>
+            <p>
+              Hai 14 giorni dalla consegna per restituire un prodotto fisico senza dover dare spiegazioni. Scrivici a{' '}
+              <a href={mailto}>{sito.email}</a>: ti rimborsiamo entro 14 giorni da quando riceviamo il reso. Le spese per rispedirci il prodotto
+              sono a tuo carico.
+            </p>
+            <p>Non si possono restituire i fumetti digitali già scaricati.</p>
+            <p>Se un prodotto arriva danneggiato, mandaci una foto: lo sostituiamo o ti rimborsiamo.</p>
+          </>
+        ) : (
+          <>
+            <p>
+              You have 14 days from delivery to return a physical product, no questions asked. Email us at <a href={mailto}>{sito.email}</a>: we
+              refund you within 14 days of receiving the return. Return shipping costs are on you.
+            </p>
+            <p>Digital comics already downloaded can't be returned.</p>
+            <p>If something arrives damaged, send us a photo: we'll replace it or refund you.</p>
+          </>
+        )
+      }
+    </section>
+
+    <section id={ancore.privacy}>
+      <h2><span class="titolo-sezione">{voci.privacy}</span></h2>
+      {
+        it ? (
+          <>
+            <p>
+              Questo sito non usa cookie di profilazione né strumenti di statistica, e i caratteri sono caricati dal
+              nostro server. Il sito è ospitato da GitHub Pages, che può registrare l'indirizzo IP dei visitatori per
+              motivi di sicurezza.
+            </p>
+            <p>
+              I pagamenti sono gestiti da Stripe: noi non vediamo mai i dati della tua carta. Riceviamo solo nome, email
+              e indirizzo di spedizione, che usiamo esclusivamente per spedire l'ordine e risponderti.
+            </p>
+            <p>Per vedere, correggere o cancellare i tuoi dati scrivici a <a href={mailto}>{sito.email}</a>.</p>
+          </>
+        ) : (
+          <>
+            <p>
+              This site uses no tracking cookies or analytics, and fonts are served from our own server. The site is
+              hosted by GitHub Pages, which may log visitors' IP addresses for security reasons.
+            </p>
+            <p>
+              Payments are handled by Stripe: we never see your card details. We only receive your name, email and
+              shipping address, which we use solely to ship your order and reply to you.
+            </p>
+            <p>To see, correct or delete your data, email us at <a href={mailto}>{sito.email}</a>.</p>
+          </>
+        )
+      }
+    </section>
+
+    <section id={ancore.contatti}>
+      <h2><span class="titolo-sezione">{voci.contatti}</span></h2>
+      <ul>
+        <li>Email: <a href={mailto}>{sito.email}</a></li>
+        <li>
+          Instagram:{' '}
+          <a href={sito.instagram} target="_blank" rel="noopener">
+            {sito.instagram.replace('https://www.', '')}
+            <span class="sr-only"> {t(lingua).nuovaScheda}</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+<style>
+  .indice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .indice a {
+    padding: 0.3em 0.8em;
+    border: 2px solid var(--inchiostro);
+    background: var(--bianco);
+    font-family: var(--font-mano);
+    text-decoration: none;
+  }
+
+  .indice a:hover {
+    background: var(--giallo);
+    color: var(--nero);
+  }
+
+  section + section {
+    margin-top: 56px;
+  }
+
+  section {
+    scroll-margin-top: 24px;
+  }
+
+  .prosa a {
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 1em;
+    border-collapse: collapse;
+    background: var(--bianco);
+    border: 3px solid var(--inchiostro);
+    box-shadow: 4px 4px 0 var(--inchiostro);
+  }
+
+  th,
+  td {
+    padding: 0.6em 0.8em;
+    text-align: left;
+    border-bottom: 1.5px solid var(--inchiostro);
+  }
+
+  th {
+    background: var(--giallo);
+    color: var(--nero);
+    font-family: var(--font-mano);
+    font-weight: 400;
+  }
+</style>

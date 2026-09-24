@@ -1,0 +1,19 @@
+---
+// Descrizione di un fumetto, biografia di un artista o post di un evento nella lingua scelta.
+// In italiano mostra il testo del file .md; in inglese il campo testoEn
+// (paragrafi separati da una riga vuota) o, se manca, ripiega sull'italiano.
+import { render, type CollectionEntry } from 'astro:content';
+import type { Lingua } from '../i18n/ui';
+
+interface Props {
+  voce: CollectionEntry<'fumetti'> | CollectionEntry<'artisti'> | CollectionEntry<'storie'> | CollectionEntry<'eventi'>;
+  lingua: Lingua;
+}
+
+const { voce, lingua } = Astro.props;
+const inglese = lingua === 'en' ? voce.data.testoEn?.trim() : undefined;
+const paragrafi = inglese ? inglese.split(/\n\s*\n/).map((p) => p.replace(/\s*\n\s*/g, ' ')) : [];
+const { Content } = await render(voce);
+---
+
+{inglese ? paragrafi.map((p) => <p>{p}</p>) : <Content />}

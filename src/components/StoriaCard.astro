@@ -1,0 +1,223 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+import Testo from './Testo.astro';
+import Ingrandibile from './Ingrandibile.astro';
+import { apparizioni, tr } from '../lib/contenuti';
+import { link, t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  storia: CollectionEntry<'storie'>;
+  lingua: Lingua;
+  inclina?: 's' | 'd';
+  // 'eager' per le schede in cima alla pagina, così l'immagine parte subito
+  loading?: 'eager' | 'lazy';
+}
+
+const { storia, lingua, inclina, loading } = Astro.props;
+const testo = t(lingua).storie;
+const dati = storia.data;
+const titolo = tr(dati, 'titolo', lingua);
+const { immagine, inCorso } = dati;
+
+// Autori con lo stesso ruolo compaiono insieme (es. "Testi e disegni: Enrox").
+const autori = await Promise.all(
+  dati.autori.map(async (a) => ({ ruolo: tr(a, 'ruolo', lingua), artista: await getEntry(a.artista) })),
+);
+const crediti = Object.entries(Object.groupBy(autori, (a) => a.ruolo)).map(([ruolo, gruppo]) => ({
+  ruolo,
+  artisti: (gruppo ?? []).map((a) => a.artista),
+}));
+const numeri = (await apparizioni(storia.id)).map((a) => ({
+  fumetto: a.fumetto,
+  nota: tr(a, 'nota', lingua),
+}));
+---
+
+<article id={storia.id} class:list={['riquadro', 'storia', inclina && `inclina-${inclina}`, { 'senza-immagine': !immagine }]}>
+  {inCorso && <span class="didascalia">{testo.inCorso}</span>}
+
+  <div
+    class="riquadro-img storia-img"
+    aria-hidden={immagine ? undefined : 'true'}
+    style={immagine ? `aspect-ratio: ${immagine.width} / ${immagine.height}` : undefined}
+  >
+    {
+      immagine ? (
+        <Ingrandibile src={immagine} alt={tr(dati, 'immagineAlt', lingua) ?? ''} lingua={lingua} widths={[480, 640, 900]} sizes="(max-width: 640px) 130px, 220px" loading={loading} />
+      ) : (
+        <span class="segnaposto">{titolo}</span>
+      )
+    }
+  </div>
+
+  <div class="storia-testo">
+    <h3>{titolo}</h3>
+
+    <dl class="crediti">
+      {
+        crediti.map(({ ruolo, artisti }) => (
+          <div>
+            <dt>{ruolo}</dt>
+            <dd>
+              {artisti.map((artista, i) => (
+                <>
+                  {i > 0 && ', '}
+                  <a href={link(lingua, 'artisti', artista.id)}>{artista.data.nome}</a>
+                </>
+              ))}
+            </dd>
+          </div>
+        ))
+      }
+      {
+        numeri.length > 0 && (
+          <div>
+            <dt>{testo.suNumeri}</dt>
+            <dd>
+              {numeri.map(({ fumetto, nota }, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <a href={link(lingua, 'fumetti', fumetto.id)}>{tr(fumetto.data, 'titolo', lingua)}</a>
+                  {nota && ` (${nota})`}
+                </>
+              ))}
+            </dd>
+          </div>
+        )
+      }
+    </dl>
+
+    <div class="prosa">
+      <Testo voce={storia} lingua={lingua} />
+    </div>
+  </div>
+</article>
+
+<style>
+  .storia {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    scroll-margin-top: 24px;
+  }
+
+  /* l'immagine ha le sue proporzioni (vedi style nel markup): si vede sempre intera, mai tagliata */
+  .storia-img {
+    align-self: start;
+    aspect-ratio: 4 / 5;
+    border-bottom: 0;
+    border-right: var(--tratto) solid var(--inchiostro);
+  }
+
+  .senza-immagine .storia-img {
+    align-self: stretch;
+  }
+
+  /* storia senza immagine: il titolo scritto a mano su fondo a retino */
+  .segnaposto {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    padding: 16px;
+    background-color: var(--magenta);
+    background-image: radial-gradient(rgb(21 18 18 / 0.25) 20%, transparent 22%);
+    background-size: 8px 8px;
+    color: var(--panna);
+    font-family: var(--font-titoli);
+    font-size: 1.5rem;
+    line-height: 1.05;
+    text-align: center;
+    text-transform: uppercase;
+    rotate: -4deg;
+    scale: 1.1;
+  }
+
+  .storia:nth-child(3n + 2) .segnaposto {
+    background-color: var(--lilla);
+  }
+
+  .storia:nth-child(3n) .segnaposto {
+    background-color: var(--giallo);
+    color: var(--nero);
+  }
+
+  .storia-testo {
+    padding: 22px 22px 18px;
+  }
+
+  .storia-testo h3 {
+    margin: 0 0 12px;
+    font-size: 1.5rem;
+  }
+
+  .crediti {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin: 0 0 12px;
+  }
+
+  .crediti dt {
+    font-family: var(--font-mano);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--inchiostro-2);
+  }
+
+  .crediti dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .crediti a {
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+  }
+
+  .storia-testo .prosa :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* telefono: immagine intera a sinistra, più piccola; testo a destra */
+  @media (max-width: 640px) {
+    .storia {
+      grid-template-columns: 130px minmax(0, 1fr);
+    }
+
+    .storia-img {
+      border-bottom: var(--tratto) solid var(--inchiostro);
+    }
+
+    .storia-testo {
+      padding: 14px 14px 14px;
+    }
+
+    .storia-testo h3 {
+      font-size: 1.15rem;
+    }
+
+    .crediti {
+      gap: 6px 16px;
+      font-size: 0.9rem;
+    }
+
+    .storia-testo .prosa {
+      font-size: 0.98rem;
+    }
+
+    /* senza immagine basta una fascia bassa in cima: il titolo è già scritto sotto */
+    .senza-immagine {
+      grid-template-columns: 1fr;
+    }
+
+    .senza-immagine .storia-img {
+      aspect-ratio: 16 / 3;
+      border-right: 0;
+    }
+
+    .senza-immagine .segnaposto {
+      font-size: 1.1rem;
+      scale: 1;
+      rotate: -2deg;
+    }
+  }
+</style>

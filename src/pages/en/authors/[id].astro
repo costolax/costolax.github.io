@@ -1,0 +1,18 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Artista from '../../../components/pagine/Artista.astro';
+
+export const getStaticPaths = (async () => {
+  const voci = await getCollection('artisti');
+  return voci.map((artista) => ({ params: { id: artista.id }, props: { artista } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  artista: CollectionEntry<'artisti'>;
+}
+
+const { artista } = Astro.props;
+---
+
+<Artista artista={artista} lingua="en" />

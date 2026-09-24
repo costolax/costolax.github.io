@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import Testata from '../Testata.astro';
+import decorazione from '../../assets/storie/a-calci-nel-culo-pagina-10.webp';
+import FumettoCard from '../FumettoCard.astro';
+import { inclina, ordinati } from '../../lib/contenuti';
+import { t, type Lingua } from '../../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const testo = t(lingua).fumetti;
+const fumetti = await ordinati('fumetti');
+---
+
+<Base lingua={lingua} sezione="fumetti" titolo={testo.titolo} descrizione={testo.descrizione}>
+  <Testata decorazione={decorazione} lingua={lingua} inquadratura="50% 22%">
+    <h1>{testo.titolo}</h1>
+    <p>{testo.intro}</p>
+  </Testata>
+
+  <section class="wrap sezione">
+    <div class="griglia griglia-compatta">
+      {fumetti.map((fumetto, i) => <FumettoCard fumetto={fumetto} lingua={lingua} inclina={inclina(i)} loading={i < 3 ? 'eager' : undefined} />)}
+    </div>
+  </section>
+</Base>

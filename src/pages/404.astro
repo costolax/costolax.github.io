@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import { link } from '../i18n/ui';
+---
+
+<!-- GitHub Pages usa un'unica pagina 404 per tutto il sito, quindi è bilingue. -->
+<Base lingua="it" titolo="Pagina non trovata · Page not found" nascondiDaiMotori>
+  <section class="wrap vuoto">
+    <h1 class="sfx">Crash!</h1>
+    <div class="nuvoletta">
+      <p>Questa pagina non esiste. O l'ha presa a calci Pippa Calciepugni.</p>
+      <p lang="en">This page doesn't exist. Or Pippa Calciepugni kicked it away.</p>
+    </div>
+    <div class="azioni">
+      <a class="btn" href={link('it', 'home')}>Torna alla home</a>
+      <a class="btn btn-chiaro" href={link('en', 'home')} lang="en">Back to home</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nuvoletta p + p {
+    margin-top: 0.6em;
+  }
+
+  .vuoto {
+    display: grid;
+    justify-items: start;
+    gap: 36px;
+    padding-block: clamp(40px, 8vw, 96px);
+  }
+
+  .sfx {
+    margin: 0;
+    font-size: clamp(3.5rem, 14vw, 9rem);
+    color: var(--sangue);
+    -webkit-text-stroke: 3px var(--inchiostro);
+    paint-order: stroke fill;
+    text-shadow: 6px 6px 0 var(--inchiostro);
+    rotate: 3deg;
+  }
+</style>

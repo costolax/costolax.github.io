@@ -1,0 +1,144 @@
+---
+// Visualizzatore a schermo intero per le immagini ingrandibili (componente Ingrandibile.astro).
+// Si apre sopra la pagina con l'immagine grande, tutta nello schermo;
+// si chiude con la X, con Esc o toccando lo schermo.
+import { t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const testo = t(lingua);
+---
+
+<dialog class="visualizzatore" aria-label={testo.ingrandisci}>
+  <div class="visualizzatore-area">
+    <img class="visualizzatore-img" alt="" />
+  </div>
+  <button type="button" class="visualizzatore-chiudi" aria-label={testo.chiudi}>
+    <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+      <path d="M4 4 L16 16 M16 4 L4 16" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
+    </svg>
+  </button>
+</dialog>
+
+<script>
+  const dialogo = document.querySelector<HTMLDialogElement>('.visualizzatore');
+  const area = dialogo?.querySelector<HTMLElement>('.visualizzatore-area');
+  const img = dialogo?.querySelector<HTMLImageElement>('.visualizzatore-img');
+  const chiudi = dialogo?.querySelector<HTMLButtonElement>('.visualizzatore-chiudi');
+
+  if (dialogo && area && img && chiudi) {
+    let ultimo: HTMLElement | null = null;
+
+    // la versione grande che basta per questo schermo: AVIF se il browser l'ha già usato per la miniatura,
+    // altrimenti WebP; 1600 px se riempie lo schermo, altrimenti 2400 px
+    const versioneGrande = (pulsante: HTMLElement) => {
+      const avif = pulsante.querySelector('img')?.currentSrc.includes('.avif');
+      const versioni = ((avif ? pulsante.dataset.grandeAvif : pulsante.dataset.grande) ?? '')
+        .split(', ')
+        .map((v) => v.split(' '))
+        .map(([url, larghezza]) => ({ url, larghezza: Number(larghezza) }));
+      const proporzioni = Number(pulsante.dataset.proporzioni) || 1;
+      const serve = Math.min(innerWidth, innerHeight * proporzioni) * devicePixelRatio;
+      return (versioni.find((v) => v.larghezza >= serve) ?? versioni.at(-1))?.url ?? '';
+    };
+
+    // appena il puntatore passa sopra un'immagine (o ci arriva il tasto Tab) inizia a scaricare quella grande,
+    // così quando si clicca è già pronta o quasi
+    const giaScaricate = new Set<string>();
+    const scaricaPrima = (e: Event) => {
+      const pulsante = (e.target as HTMLElement).closest<HTMLElement>('.ingrandibile');
+      if (!pulsante) return;
+      const url = versioneGrande(pulsante);
+      if (!url || giaScaricate.has(url)) return;
+      giaScaricate.add(url);
+      new Image().src = url;
+    };
+    document.addEventListener('pointerover', scaricaPrima);
+    document.addEventListener('focusin', scaricaPrima);
+
+    // apre: prima mostra subito l'immagine già scaricata, poi la sostituisce con quella grande
+    document.addEventListener('click', (e) => {
+      const pulsante = (e.target as HTMLElement).closest<HTMLButtonElement>('.ingrandibile');
+      if (!pulsante) return;
+      ultimo = pulsante;
+      const piccola = pulsante.querySelector('img');
+      const url = versioneGrande(pulsante);
+      img.alt = pulsante.dataset.alt ?? '';
+      img.src = piccola?.currentSrc || url;
+      const grande = new Image();
+      grande.onload = () => {
+        if (dialogo.open) img.src = grande.src;
+      };
+      grande.src = url;
+      dialogo.showModal();
+    });
+
+    // un tocco ovunque (immagine compresa) chiude
+    chiudi.addEventListener('click', () => dialogo.close());
+    area.addEventListener('click', () => dialogo.close());
+    dialogo.addEventListener('close', () => {
+      img.removeAttribute('src');
+      ultimo?.focus();
+    });
+  }
+</script>
+
+<style>
+  .visualizzatore {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(12 10 10 / 0.94);
+    color: var(--panna);
+  }
+
+  .visualizzatore::backdrop {
+    background: rgb(12 10 10 / 0.6);
+  }
+
+  .visualizzatore-area {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 60px 16px 24px;
+    cursor: zoom-out;
+  }
+
+  /* tutta nello schermo */
+  .visualizzatore-img {
+    max-width: 100%;
+    max-height: calc(100dvh - 84px);
+    width: auto;
+    height: auto;
+    border: 3px solid var(--panna);
+    background: #fff;
+  }
+
+  .visualizzatore-chiudi {
+    position: fixed;
+    top: 10px;
+    right: 12px;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 3px solid var(--panna);
+    background: var(--magenta);
+    color: var(--panna);
+    cursor: pointer;
+  }
+
+  .visualizzatore-chiudi:hover {
+    background: var(--giallo);
+    color: var(--nero);
+  }
+</style>

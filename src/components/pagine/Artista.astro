@@ -1,0 +1,154 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FumettoCard from '../FumettoCard.astro';
+import StoriaCard from '../StoriaCard.astro';
+import Testo from '../Testo.astro';
+import Ingrandibile from '../Ingrandibile.astro';
+import { inclina, ordinati, tr } from '../../lib/contenuti';
+import { t, type Lingua } from '../../i18n/ui';
+
+interface Props {
+  artista: CollectionEntry<'artisti'>;
+  lingua: Lingua;
+}
+
+const { artista, lingua } = Astro.props;
+const testo = t(lingua).artisti;
+const dati = artista.data;
+const { nome, immagine, instagram, link } = dati;
+const ruolo = tr(dati, 'ruolo', lingua);
+
+// Le sue storie, e i numeri in cui è uscito qualcosa di suo (o che firma direttamente).
+const storie = (await ordinati('storie')).filter((s) => s.data.autori.some((a) => a.artista.id === artista.id));
+const idStorie = new Set(storie.map((s) => s.id));
+const fumetti = (await ordinati('fumetti')).filter(
+  (f) => f.data.autori.some((a) => a.artista.id === artista.id) || f.data.sommario.some((v) => idStorie.has(v.storia.id)),
+);
+const portfolio = dati.portfolio.map((tavola) => ({ immagine: tavola.immagine, alt: tr(tavola, 'alt', lingua) }));
+const collegamenti = [...(instagram ? [{ label: 'Instagram', url: instagram }] : []), ...link];
+---
+
+<Base
+  lingua={lingua}
+  sezione="artisti"
+  id={artista.id}
+  titolo={nome}
+  descrizione={testo.descrizioneScheda(nome, ruolo)}
+  immagine={immagine}
+>
+  <article class="wrap scheda sezione">
+    <div class="riquadro scheda-immagine inclina-d">
+      <Ingrandibile src={immagine} alt={tr(dati, 'immagineAlt', lingua)} lingua={lingua} widths={[840, 1200]} sizes="(max-width: 800px) 92vw, 420px" loading="eager" />
+    </div>
+
+    <div>
+      <span class="didascalia">{ruolo}</span>
+      <h1>{nome}</h1>
+      <div class="prosa">
+        <Testo voce={artista} lingua={lingua} />
+      </div>
+      {
+        collegamenti.length > 0 && (
+          <div class="azioni">
+            {collegamenti.map((c) => (
+              <a class="btn btn-chiaro" href={c.url} target="_blank" rel="noopener">
+                {c.label}
+                <span class="sr-only"> {t(lingua).nuovaScheda}</span>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </article>
+
+  {
+    storie.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.sueStorie}</span>
+        </h2>
+        <div class="elenco-storie">
+          {storie.map((storia, i) => (
+            <StoriaCard storia={storia} lingua={lingua} inclina={inclina(i)} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    fumetti.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.suoiFumetti}</span>
+        </h2>
+        <div class="griglia griglia-compatta">
+          {fumetti.map((fumetto, i) => (
+            <FumettoCard fumetto={fumetto} lingua={lingua} inclina={inclina(i)} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    portfolio.length > 0 && (
+      <section class="wrap sezione">
+        <h2>
+          <span class="titolo-sezione">{testo.portfolio}</span>
+        </h2>
+        <div class="griglia griglia-larga">
+          {portfolio.map((tavola, i) => (
+            <div class:list={['riquadro', 'tavola-portfolio', inclina(i + 1) && `inclina-${inclina(i + 1)}`]}>
+              <Ingrandibile src={tavola.immagine} alt={tavola.alt} lingua={lingua} widths={[640, 900, 1200]} sizes="(max-width: 700px) 92vw, 380px" />
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .scheda {
+    display: grid;
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+  }
+
+  .scheda-immagine {
+    overflow: hidden;
+  }
+
+  h1 {
+    margin-top: 0.3em;
+  }
+
+  .azioni {
+    margin-top: 12px;
+  }
+
+  .elenco-storie {
+    display: grid;
+    gap: calc(var(--gutter) + 18px);
+    max-width: 960px;
+  }
+
+  .tavola-portfolio {
+    align-self: start;
+    overflow: hidden;
+  }
+
+  @media (max-width: 800px) {
+    .scheda {
+      grid-template-columns: 1fr;
+    }
+
+    .scheda-immagine {
+      max-width: 420px;
+    }
+  }
+</style>

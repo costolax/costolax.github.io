@@ -1,0 +1,215 @@
+---
+import Base from '../../layouts/Base.astro';
+import Testata from '../Testata.astro';
+import Ingrandibile from '../Ingrandibile.astro';
+import decorazione from '../../assets/tavole/meccanico-oscuro.webp';
+import ProdottoCard from '../ProdottoCard.astro';
+import InfoSezioni from '../InfoSezioni.astro';
+import { inclina, ordinati } from '../../lib/contenuti';
+import { link, t, tipiProdotto, type Lingua } from '../../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const tutto = t(lingua);
+const testo = tutto.shop;
+const prodotti = await ordinati('prodotti');
+const tipiPresenti = tipiProdotto.filter((tipo) => prodotti.some((p) => p.data.tipo === tipo));
+const passi = testo.passi.map((passo, i) => ({ ...passo, n: String(i + 1) }));
+---
+
+<Base lingua={lingua} sezione="shop" titolo={testo.titolo} descrizione={testo.descrizione}>
+  {
+    prodotti.length === 0 ? (
+      <section class="wrap presto">
+        <h1 class="sr-only">{testo.titolo}</h1>
+        <div class="riquadro presto-immagine inclina-d" style={`aspect-ratio: ${decorazione.width} / ${decorazione.height}`}>
+          <Ingrandibile src={decorazione} alt="" lingua={lingua} widths={[480, 800, 1200]} sizes="(max-width: 600px) 80vw, 420px" loading="eager" />
+        </div>
+        <p class="presto-scritta">Coming soon</p>
+      </section>
+    ) : (
+      <>
+  <Testata decorazione={decorazione} lingua={lingua} inquadratura="50% 25%">
+    <h1>{testo.titolo}</h1>
+    <p>
+      {testo.intro}{' '}
+      <a href={`${link(lingua, 'info')}#${tutto.info.ancore.spedizioni}`}>{testo.spedizioniEResi}</a>.
+    </p>
+  </Testata>
+
+  <section class="wrap passi" aria-label={testo.comeFunziona}>
+    {
+      passi.map((passo, i) => (
+        <div class:list={['riquadro', 'passo', inclina(i) && `inclina-${inclina(i)}`]}>
+          <span class="passo-n" aria-hidden="true">
+            {passo.n}
+          </span>
+          <h2>{passo.titolo}</h2>
+          <p>{passo.testo}</p>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="wrap sezione">
+    <div class="filtri" role="group" aria-label={testo.filtraPerTipo} hidden>
+      <button type="button" class="filtro" data-filtro="tutto" aria-pressed="true">
+        {testo.tutto}
+      </button>
+      {
+        tipiPresenti.map((tipo) => (
+          <button type="button" class="filtro" data-filtro={tipo} aria-pressed="false">
+            {tutto.tipi[tipo]}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="griglia prodotti">
+      {prodotti.map((prodotto, i) => <ProdottoCard prodotto={prodotto} lingua={lingua} inclina={inclina(i)} />)}
+    </div>
+  </section>
+
+  <!-- spedizioni, resi, privacy e contatti: compaiono quando lo shop apre -->
+  <InfoSezioni lingua={lingua} />
+      </>
+    )
+  }
+</Base>
+
+<script>
+  const filtri = document.querySelector<HTMLElement>('.filtri');
+  const bottoni = document.querySelectorAll<HTMLButtonElement>('.filtro');
+  const prodotti = document.querySelectorAll<HTMLElement>('.prodotti [data-tipo]');
+
+  if (filtri && prodotti.length > 0) {
+    filtri.hidden = false;
+    for (const bottone of bottoni) {
+      bottone.addEventListener('click', () => {
+        const scelto = bottone.dataset.filtro;
+        for (const b of bottoni) b.setAttribute('aria-pressed', String(b === bottone));
+        for (const p of prodotti) p.hidden = scelto !== 'tutto' && p.dataset.tipo !== scelto;
+      });
+    }
+  }
+</script>
+
+<style>
+  :global(.testata) a {
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+  }
+
+  .passi {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: calc(var(--gutter) + 8px);
+    margin-top: 36px;
+  }
+
+  .passo {
+    padding: 22px 20px 18px;
+  }
+
+  .passo:nth-child(2) {
+    background: var(--giallo);
+    color: var(--nero);
+  }
+
+  .passo h2 {
+    margin: 0 0 0.3em;
+    font-size: 1.4rem;
+  }
+
+  .passo p {
+    margin: 0;
+  }
+
+  .passo-n {
+    position: absolute;
+    top: -16px;
+    right: 14px;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--inchiostro);
+    border-radius: 50%;
+    background: var(--magenta);
+    color: var(--panna);
+    font-family: var(--font-titoli);
+  }
+
+  /* shop non ancora aperto: l'immagine e la scritta "Coming soon" */
+  .presto {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding-block: clamp(40px, 8vw, 80px);
+  }
+
+  .presto-immagine {
+    width: min(80%, 420px);
+    overflow: hidden;
+  }
+
+  .presto-immagine :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .presto-scritta {
+    margin: -0.6em 0 0;
+    position: relative;
+    z-index: 2;
+    font-family: var(--font-titoli);
+    font-size: clamp(2.6rem, 11vw, 5.5rem);
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--giallo);
+    -webkit-text-stroke: 3px var(--nero);
+    paint-order: stroke fill;
+    text-shadow: 6px 6px 0 var(--magenta);
+    rotate: -5deg;
+  }
+
+  .filtri {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+
+  .filtri[hidden] {
+    display: none;
+  }
+
+  .filtro {
+    padding: 0.4em 0.9em;
+    border: 2px solid var(--inchiostro);
+    background: var(--bianco);
+    color: var(--inchiostro);
+    font-family: var(--font-mano);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .filtro:hover {
+    background: var(--giallo);
+    color: var(--nero);
+  }
+
+  .filtro[aria-pressed='true'] {
+    background: var(--inchiostro);
+    color: var(--carta);
+    box-shadow: 3px 3px 0 var(--magenta);
+  }
+
+  .prodotti :global([hidden]) {
+    display: none;
+  }
+</style>

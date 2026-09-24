@@ -1,0 +1,86 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Specifiche from './Specifiche.astro';
+import { tr } from '../lib/contenuti';
+import { link, t, type Lingua } from '../i18n/ui';
+
+interface Props {
+  fumetto: CollectionEntry<'fumetti'>;
+  lingua: Lingua;
+  inclina?: 's' | 'd';
+  // 'eager' per le schede in cima alla pagina, così l'immagine parte subito
+  loading?: 'eager' | 'lazy';
+}
+
+const { fumetto, lingua, inclina, loading } = Astro.props;
+const dati = fumetto.data;
+const titolo = tr(dati, 'titolo', lingua);
+const sottotitolo = tr(dati, 'sottotitolo', lingua);
+const copertinaAlt = tr(dati, 'copertinaAlt', lingua);
+const uscita = tr(dati, 'uscita', lingua);
+const { copertina, pdfGratis, inArrivo } = dati;
+---
+
+<a class:list={['riquadro', 'fumetto', inclina && `inclina-${inclina}`]} href={link(lingua, 'fumetti', fumetto.id)}>
+  {uscita && <span class="didascalia">{uscita}</span>}
+  {pdfGratis && <div class="scoppio etichetta" aria-hidden="true"><span>{t(lingua).fumetti.gratis}</span></div>}
+  {inArrivo && <div class="scoppio lungo etichetta" aria-hidden="true"><span>{t(lingua).fumetti.ultimaUscita}</span></div>}
+  <div class="riquadro-img fumetto-img">
+    <Picture formats={['avif']} fallbackFormat="webp" src={copertina} alt={copertinaAlt} widths={[640, 900, 1200]} sizes="(max-width: 600px) 92vw, 300px" loading={loading} />
+  </div>
+  <div class="fumetto-testo">
+    <h3>{titolo}</h3>
+    <Specifiche fumetto={fumetto} lingua={lingua} class="fumetto-specifiche" />
+    {sottotitolo && <p>{sottotitolo}</p>}
+  </div>
+</a>
+
+<style>
+  .etichetta {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    z-index: 3;
+    rotate: 10deg;
+  }
+
+  /* su telefono la scheda è larga quanto lo schermo: l'etichetta resta dentro */
+  /* su telefono la scheda è stretta: l'etichetta, più piccola, scende a metà copertina come un adesivo
+     così non copre la data in alto */
+  @media (max-width: 600px) {
+    .etichetta {
+      top: 30%;
+      right: 4px;
+      scale: 0.72;
+    }
+  }
+
+  /* tutte le copertine nello stesso riquadro 3:4 (il formato della rivista, 21×28 cm) e le schede di una riga
+     allungate alla stessa altezza: tutte uguali anche se i file o i titoli hanno lunghezze diverse */
+  .fumetto {
+    align-self: stretch;
+  }
+
+  .fumetto-img {
+    aspect-ratio: 3 / 4;
+  }
+
+  .fumetto-testo {
+    padding: 14px 16px 16px;
+  }
+
+  .fumetto-testo h3 {
+    margin: 0;
+  }
+
+  .fumetto-testo :global(.fumetto-specifiche) {
+    margin-top: 8px;
+  }
+
+  .fumetto-testo p {
+    margin: 0.3em 0 0;
+    font-family: var(--font-mano);
+    color: var(--magenta);
+  }
+</style>

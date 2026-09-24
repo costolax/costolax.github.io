@@ -1,0 +1,27 @@
+# build
+dist/
+.astro/
+
+# dipendenze
+node_modules/
+
+# PDF originali non marchiati (vedi scripts/marchia-pdf.mjs): non vanno pubblicati
+originali/
+
+# archivio dei file di partenza e appunti: restano solo in locale
+resourses/
+daAggiungere.md
+
+# istruzioni e impostazioni locali per Claude Code
+CLAUDE.md
+.claude/
+
+# log
+npm-debug.log*
+
+# variabili d'ambiente
+.env
+.env.*
+
+# sistema
+.DS_Store
