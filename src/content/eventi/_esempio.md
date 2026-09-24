@@ -11,7 +11,7 @@ citta: Lucca
 stand: Area Self, tavolo 12          # facoltativo
 standEn: Self area, table 12         # facoltativo
 link: https://www.esempio.it         # facoltativo: sito dell'evento
-immagine: ../../assets/fumetti/costolax-n0-copertina.webp   # facoltativa: locandina o foto
+immagine: ../../assets/fumetti/costolax-n0.webp   # facoltativa: locandina o foto
 immagineAlt: Descrizione dell'immagine per chi non vede
 testoEn: "What we bring, where to find us and anything else worth knowing."
 ---

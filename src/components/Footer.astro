@@ -162,6 +162,19 @@ const anno = new Date().getFullYear();
     text-underline-offset: 3px;
   }
 
+  /* touch: più spazio attorno ai link del footer, così si prendono col dito */
+  @media (pointer: coarse) {
+    .piede-link a,
+    .piede-crediti a {
+      display: inline-block;
+      padding-block: 10px;
+    }
+
+    .piede-link {
+      gap: 0 24px;
+    }
+  }
+
   .piede-crediti a:hover {
     color: var(--giallo);
     opacity: 1;

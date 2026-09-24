@@ -11,7 +11,7 @@ autori:
   - artista: lo-scolo
     ruolo: Autori
     ruoloEn: Authors
-copertina: ../../assets/fumetti/costolax-n0-copertina.webp
+copertina: ../../assets/fumetti/costolax-n0.webp
 copertinaAlt: Copertina viola di Costolax N.0, una ragazza tatuata con calze a rete che incide la scritta Costolax, 500 lire
 copertinaAltEn: Purple cover of Costolax N.0, a tattooed girl in fishnets carving the word Costolax, 500 lire
 uscita: Marzo 2026
@@ -20,10 +20,20 @@ pagine: 64
 colori: Bianco e nero
 coloriEn: Black and white
 formato: 21×28 cm
+# Anteprima: le tavole di resourses/anteprime/anteprima-costolax-0, nell'ordine del sommario
 tavole:
-  - immagine: ../../assets/fumetti/costolax-n0-intro-pagina-04.webp
-    alt: "Intro, pagina 4: i tre fondatori di Costolax avanzano nel fumo. «Avete divorato il denaro e le speranze di giovani aspiranti artisti. Ma il banchetto è finito. D'ora in avanti nessuno di voi è al sicuro.»"
-    altEn: "Intro, page 4: the three founders of Costolax stride out of the smoke. «You have devoured the money and hopes of young aspiring artists. But the feast is over. From now on none of you is safe.»"
+  - immagine: ../../assets/anteprime/costolax-n0/lo-squalo-corsa-pagina-02.webp
+    alt: "Lo Squalo-Corsa, pagina 2"
+    altEn: "Lo Squalo-Corsa, page 2"
+  - immagine: ../../assets/anteprime/costolax-n0/pippa-calciepugni-pagina-01.webp
+    alt: "Pippa Calciepugni, pagina 1"
+    altEn: "Pippa Calciepugni, page 1"
+  - immagine: ../../assets/anteprime/costolax-n0/a-calci-nel-culo-pagina-08.webp
+    alt: "A Calci nel Culo, pagina 8"
+    altEn: "A Calci nel Culo, page 8"
+  - immagine: ../../assets/anteprime/costolax-n0/zia-costola-pagina-01.webp
+    alt: "Zia Costola presenta, pagina 1"
+    altEn: "Zia Costola presents, page 1"
 sommario:
   - storia: lo-squalo-corsa
     titolo: Le tragicomiche avventure dello Squalo-Corsa

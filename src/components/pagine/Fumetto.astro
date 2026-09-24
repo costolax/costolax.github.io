@@ -157,10 +157,10 @@ const sommario = await Promise.all(
         <h2>
           <span class="titolo-sezione">{testo.anteprima}</span>
         </h2>
-        <div class="griglia griglia-larga">
+        <div class="anteprima-riga">
           {tavole.map((tavola, i) => (
             <div class:list={['riquadro', 'tavola-anteprima', inclina(i + 1) && `inclina-${inclina(i + 1)}`]}>
-              <Ingrandibile src={tavola.immagine} alt={tavola.alt} lingua={lingua} widths={[760, 1200, 1600]} sizes="(max-width: 700px) 92vw, 380px" />
+              <Ingrandibile src={tavola.immagine} alt={tavola.alt} lingua={lingua} widths={[640, 900, 1200]} sizes="(max-width: 900px) 46vw, 290px" />
             </div>
           ))}
         </div>
@@ -276,9 +276,36 @@ const sommario = await Promise.all(
     font-size: 1.1rem;
   }
 
+  /* anteprima: da computer tutte le tavole sulla stessa riga, qualunque sia il loro numero */
+  .anteprima-riga {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: calc(var(--gutter) + 8px);
+  }
+
+  /* le tavole sono già preparate tutte uguali (3:4, disegno centrato con lo stesso margine bianco):
+     il riquadro ha le stesse proporzioni, così combaciano senza tagli né bande */
   .tavola-anteprima {
     align-self: start;
     overflow: hidden;
+    aspect-ratio: 3 / 4;
+    background: #fff;
+  }
+
+  .tavola-anteprima :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* tablet e telefono: due per riga, altrimenti diventano troppo piccole per leggerle */
+  @media (max-width: 900px) {
+    .anteprima-riga {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px 16px;
+    }
   }
 
   @media (max-width: 800px) {

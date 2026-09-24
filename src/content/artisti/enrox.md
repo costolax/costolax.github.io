@@ -2,7 +2,7 @@
 nome: Enrox
 ruolo: Testi e disegni
 ruoloEn: Story and art
-immagine: ../../assets/artisti/enrox.webp
+immagine: ../../assets/ritratti/enrox.webp
 immagineAlt: Ritratto a inchiostro di un uomo con occhiali tondi e cravatta, su sfondo rosso
 immagineAltEn: Ink portrait of a man with round glasses and a tie, on a red background
 instagram: https://www.instagram.com/enrox__

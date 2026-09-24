@@ -4,10 +4,9 @@ autori:
   - artista: enrox
     ruolo: Testi e disegni
     ruoloEn: Story and art
-immagine: ../../assets/storie/a-calci-nel-culo-pagina-10.webp
-immagineAlt: Pagina 10, un omone con la fascia in testa affronta una banda armata di catene e chiavi inglesi
-immagineAltEn: Page 10, a huge man with a headband takes on a gang armed with chains and wrenches
-inCorso: true
+immagine: ../../assets/storie/a-calci-nel-culo.webp
+immagineAlt: A Calci nel Culo, il Meccanico Oscuro
+immagineAltEn: A Calci nel Culo, the Dark Mechanic
 testoEn: "One mechanic against an army of thugs. And he's seriously pissed off."
 ordine: 3
 ---

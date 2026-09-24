@@ -6,8 +6,8 @@ autori:
     ruolo: Testi e disegni
     ruoloEn: Story and art
 immagine: ../../assets/storie/lo-squalo-corsa.webp
-immagineAlt: Pagina di apertura dello Squalo-Corsa, uno squalo con gambe e braccia muscolose che mostra i bicipiti
-immagineAltEn: Opening page of Lo Squalo-Corsa, a shark with muscular arms and legs flexing its biceps
+immagineAlt: Lo Squalo-Corsa, copertina
+immagineAltEn: Lo Squalo-Corsa, cover
 testoEn: "An anthropomorphic shark travels the world (he still hasn't figured out it's a shithole)."
 ordine: 1
 ---

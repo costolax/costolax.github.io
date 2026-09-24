@@ -8,11 +8,11 @@ import Base from '../../layouts/Base.astro';
 import ProdottoCard from '../ProdottoCard.astro';
 import ArtistaCard from '../ArtistaCard.astro';
 import EventoCard from '../EventoCard.astro';
-import banda from '../../assets/storie/pippa-calciepugni.webp';
-import paginaDieci from '../../assets/storie/a-calci-nel-culo-pagina-10.webp';
-import meccanico from '../../assets/tavole/meccanico-oscuro.webp';
-import donatella from '../../assets/tavole/donatella.webp';
-import coverIntro from '../../assets/tavole/copertina-intro.webp';
+import banda from '../../assets/laterali/pippa-calciepugni-quarta-di-copertina.webp';
+import paginaDieci from '../../assets/laterali/costolax-n0-a-calci-nel-culo-pagina-10.webp';
+import meccanico from '../../assets/laterali/meccanico-oscuro.webp';
+import donatella from '../../assets/illustrazioni/donatella.webp';
+import coverIntro from '../../assets/laterali/costolax-n0-intro.webp';
 import scritta from '../../assets/marchio/scritta-costolax.webp';
 import { sito } from '../../site.config';
 import { eventiDivisi, inclina, ordinati, tr } from '../../lib/contenuti';
@@ -73,7 +73,6 @@ const striscia = [
     <!-- lazy: da telefono è nascosta e così non viene nemmeno scaricata -->
     <div class="riquadro vignetta-banda inclina-d" style={`--proporzioni: ${banda.width} / ${banda.height}`}>
       <Ingrandibile src={banda} alt={h.bandaAlt} lingua={lingua} widths={[640, 900, 1200]} sizes="380px" loading="lazy" />
-      <span class="sfx" aria-hidden="true">Bang!</span>
     </div>
   </section>
 
@@ -295,18 +294,6 @@ const striscia = [
     object-position: 50% 12%;
   }
 
-  .sfx {
-    position: absolute;
-    right: 12px;
-    bottom: 8px;
-    font-family: var(--font-titoli);
-    font-size: 2.6rem;
-    color: var(--giallo);
-    text-transform: uppercase;
-    -webkit-text-stroke: 2px var(--nero);
-    paint-order: stroke fill;
-    rotate: -8deg;
-  }
 
   /* ---------- 2. il nuovo numero ---------- */
 

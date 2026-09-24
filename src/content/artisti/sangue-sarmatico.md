@@ -2,7 +2,7 @@
 nome: Sangue Sarmatico
 ruolo: Testi e disegni
 ruoloEn: Story and art
-immagine: ../../assets/artisti/sangue-sarmatico.webp
+immagine: ../../assets/ritratti/sangue-sarmatico.webp
 immagineAlt: Ragazza con occhiali da sole e giacca rosa, acquerello su sfondo lilla
 immagineAltEn: Girl with sunglasses and a pink jacket, watercolour on a lilac background
 instagram: https://www.instagram.com/piero_spotacia

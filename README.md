@@ -29,11 +29,15 @@ Ogni `git push` sul ramo `main` ripubblica il sito da solo (GitHub Actions, file
 ```
 src/
 ├── assets/              le immagini (webp/jpg/png): il sito le ridimensiona da solo
-│   ├── artisti/         i ritratti, con lo stesso nome del file dell'autore (enrox.webp)
-│   ├── fumetti/         copertine e tavole dei numeri (costolax-n1-copertina.webp)
-│   ├── storie/          un'immagine per storia, con lo stesso nome del file della storia
-│   ├── tavole/          disegni usati come decorazione nelle pagine
+│   ├── fumetti/         le copertine dei numeri (costolax-n1.webp)
+│   ├── anteprime/       le tavole in anteprima, una cartella per numero (costolax-n1/robopork-pagina-12.webp)
+│   ├── storie/          le copertine delle storie, con lo stesso nome del file della storia (robopork.webp)
+│   ├── laterali/        le immagini a lato in cima alle pagine (Home, Fumetti, Autori, Storie, Fiere, Shop)
+│   ├── ritratti/        i ritratti degli autori (enrox.webp)
+│   ├── illustrazioni/   altri disegni (la striscia di tavole in home)
 │   └── marchio/         logo e scritta Costolax
+│   Nomi: tutto minuscolo con i trattini, lo stesso nome dei file in content/ (es. pippa-calciepugni),
+│   le pagine sempre a due cifre (pagina-08).
 ├── content/
 │   ├── artisti/         un file .md per autore (pagine /autori/)
 │   ├── eventi/          un file .md per fiera o evento (pagine /fiere/, modello: _esempio.md)
@@ -64,7 +68,7 @@ Copiate un file esistente nella stessa cartella, rinominatelo (il nome del file 
 ```yaml
 nome: Sangue Sarmatico
 ruolo: Disegni
-immagine: ../../assets/artisti/sangue-sarmatico.webp
+immagine: ../../assets/ritratti/sangue-sarmatico.webp
 immagineAlt: Descrizione dell'immagine per chi non vede
 instagram: https://www.instagram.com/...   # facoltativo
 ordine: 2                                   # posizione nelle liste
@@ -77,10 +81,10 @@ sottotitolo: Capitolo 1          # facoltativo
 autori:
   - artista: lo-scolo            # nome del file dell'autore, senza .md
     ruolo: Testi
-copertina: ../../assets/fumetti/robopork-copertina.webp
+copertina: ../../assets/fumetti/costolax-n2.webp
 copertinaAlt: ...
 tavole:                          # anteprime, facoltative
-  - immagine: ../../assets/fumetti/robopork-pagina-01.webp
+  - immagine: ../../assets/anteprime/costolax-n2/robopork-pagina-01.webp
     alt: ...
 uscita: Settembre 2026
 inEvidenza: true                 # compare in home
@@ -119,7 +123,7 @@ luogo: Padiglione Self Area
 citta: Lucca
 stand: Tavolo 12                # facoltativo
 link: https://...               # facoltativo: sito dell'evento
-immagine: ../../assets/tavole/...  # facoltativa: locandina o foto
+immagine: ../../assets/illustrazioni/...  # facoltativa: locandina o foto
 ```
 
 Gli eventi stanno in "Prossimi eventi" fino all'ultimo giorno compreso, poi passano da soli in "Dove siamo stati". La data di riferimento è quella dell'ultima pubblicazione: dopo un evento basta un push qualsiasi per spostarlo. I prossimi due eventi compaiono anche in home.
@@ -129,7 +133,7 @@ Gli eventi stanno in "Prossimi eventi" fino all'ultimo giorno compreso, poi pass
 nome: Stampa «Costolax Pink»
 tipo: stampa                     # albo | stampa | gadget | pdf | originale
 prezzo: 15
-immagine: ../../assets/tavole/costolax-pink.webp
+immagine: ../../assets/illustrazioni/costolax-pink.webp
 immagineAlt: ...
 stripeLink: https://buy.stripe.com/...   # senza link il pulsante dice "In arrivo"
 disponibile: true                         # false → "Esaurito" / "Venduto"

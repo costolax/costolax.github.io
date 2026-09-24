@@ -2,7 +2,7 @@
 nome: Lo Scolo
 ruolo: Testi
 ruoloEn: Story
-immagine: ../../assets/artisti/lo-scolo.webp
+immagine: ../../assets/ritratti/lo-scolo.webp
 immagineAlt: Ritratto a pennarello nero di un ragazzo con il ciuffo e un maglione, ombreggiato a matita azzurra
 immagineAltEn: Black marker portrait of a young man with a quiff and a sweater, shaded in light blue pencil
 instagram: https://www.instagram.com/gioeleferra

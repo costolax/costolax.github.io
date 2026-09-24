@@ -168,6 +168,14 @@ const numeri = (await apparizioni(storia.id)).map((a) => ({
     font-weight: 700;
   }
 
+  /* touch: i nomi e i numeri si toccano meglio */
+  @media (pointer: coarse) {
+    .crediti a {
+      display: inline-block;
+      padding-block: 6px;
+    }
+  }
+
   .crediti a {
     text-decoration-color: var(--magenta);
     text-decoration-thickness: 2px;

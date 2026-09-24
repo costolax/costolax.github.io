@@ -12,7 +12,7 @@ autori:
   - artista: lo-scolo
     ruolo: Autori
     ruoloEn: Authors
-copertina: ../../assets/fumetti/costolax-n1-copertina.webp
+copertina: ../../assets/fumetti/costolax-n1.webp
 copertinaAlt: Copertina gialla di Costolax N.1, un pugile pieno di cerotti con i guantoni alzati sul ring, 500 lire
 copertinaAltEn: Yellow cover of Costolax N.1, a boxer covered in plasters with his gloves up in the ring, 500 lire
 uscita: Settembre 2026
@@ -22,6 +22,20 @@ colori: Bianco e nero
 coloriEn: Black and white
 formato: 21×28 cm
 inArrivo: true
+# Anteprima: le tavole di resourses/anteprime/anteprima-costolax-1, nell'ordine del sommario
+tavole:
+  - immagine: ../../assets/anteprime/costolax-n1/robopork-pagina-12.webp
+    alt: "RoboPork, pagina 12"
+    altEn: "RoboPork, page 12"
+  - immagine: ../../assets/anteprime/costolax-n1/pippa-calciepugni-pagina-27.webp
+    alt: "Pippa Calciepugni, pagina 27"
+    altEn: "Pippa Calciepugni, page 27"
+  - immagine: ../../assets/anteprime/costolax-n1/lo-squalo-corsa-titolo.webp
+    alt: "Lo Squalo-Corsa, pagina del titolo"
+    altEn: "Lo Squalo-Corsa, title page"
+  - immagine: ../../assets/anteprime/costolax-n1/a-calci-nel-culo-pagina-21.webp
+    alt: "A Calci nel Culo, capitolo 2, pagina 21"
+    altEn: "A Calci nel Culo, chapter 2, page 21"
 sommario:
   - storia: robopork
   - storia: pippa-calciepugni
