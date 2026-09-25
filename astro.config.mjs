@@ -16,6 +16,8 @@ export default defineConfig({
   base: BASE,
   trailingSlash: 'ignore',
   image: {
+    // in sviluppo il browser tiene le immagini un'ora e non un anno (vedi src/lib/immagini-sviluppo.ts)
+    ...(SVILUPPO && { endpoint: { entrypoint: './src/lib/immagini-sviluppo.ts' } }),
     service: {
       entrypoint: 'astro/assets/services/sharp',
       // WebP a qualità 95 con colori a piena risoluzione (smartSubsample): a occhio è identico all'originale
