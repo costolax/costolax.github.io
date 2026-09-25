@@ -30,7 +30,8 @@ const { lingua, sezione = 'home', id, titolo, immagine, nascondiDaiMotori = fals
 const testo = t(lingua);
 const descrizione = Astro.props.descrizione ?? testo.descrizione;
 
-const titoloCompleto = titolo ? `${titolo} · ${sito.nome}` : `${sito.nome} · ${testo.motto}`;
+// In home il titolo è solo il nome: nei risultati di ricerca compare "Costolax" seguito dalla descrizione.
+const titoloCompleto = titolo ? `${titolo} · ${sito.nome}` : sito.nome;
 const canonico = new URL(Astro.url.pathname, Astro.site);
 const versioni = (Object.keys(lingue) as Lingua[]).map((l) => ({
   lingua: l,
@@ -38,6 +39,30 @@ const versioni = (Object.keys(lingue) as Lingua[]).map((l) => ({
 }));
 const anteprima = await getImage({ src: immagine ?? copertinaPredefinita, width: 1080, format: 'jpg' });
 const anteprimaUrl = new URL(anteprima.src, Astro.site);
+
+// Dati strutturati solo in home: dicono a Google il nome del sito ("Costolax") e il logo del collettivo.
+const home = new URL(link(lingua, 'home'), Astro.site);
+const datiStrutturati =
+  sezione === 'home' && !nascondiDaiMotori
+    ? JSON.stringify([
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: sito.nome,
+          url: home,
+          inLanguage: lingua,
+          description: descrizione,
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: sito.nome,
+          url: new URL('/', Astro.site),
+          logo: new URL(url('favicon-192.png'), Astro.site),
+          sameAs: [sito.instagram],
+        },
+      ])
+    : null;
 ---
 
 <!doctype html>
@@ -53,7 +78,10 @@ const anteprimaUrl = new URL(anteprima.src, Astro.site);
         versioni.map((v) => <link rel="alternate" hreflang={v.lingua} href={new URL(v.href, Astro.site)} />)
     }
     {!nascondiDaiMotori && <link rel="alternate" hreflang="x-default" href={new URL(link('it', sezione, id), Astro.site)} />}
-    <link rel="icon" type="image/png" href={url('favicon.png')} />
+    <!-- Google mostra l'icona nei risultati solo se è quadrata e multipla di 48px (48, 96, 192...). -->
+    <link rel="icon" href={url('favicon.ico')} sizes="48x48" />
+    <link rel="icon" type="image/png" href={url('favicon-96.png')} sizes="96x96" />
+    <link rel="icon" type="image/png" href={url('favicon-192.png')} sizes="192x192" />
     <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
     <meta name="theme-color" content="#151212" />
     <!-- Applica subito il tema scelto col pulsante (chiaro/scuro), prima di disegnare la pagina. -->
@@ -73,6 +101,7 @@ const anteprimaUrl = new URL(anteprima.src, Astro.site);
     <meta property="og:url" content={canonico} />
     <meta property="og:image" content={anteprimaUrl} />
     <meta name="twitter:card" content="summary_large_image" />
+    {datiStrutturati && <script type="application/ld+json" set:html={datiStrutturati} />}
   </head>
   <body>
     <a class="salta sr-only" href="#contenuto">{testo.saltaAlContenuto}</a>
