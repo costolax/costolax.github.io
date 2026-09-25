@@ -16,6 +16,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/space-grotesk": "^5.3.0",
     "@fontsource/bowlby-one": "^5.3.0",
     "@fontsource/permanent-marker": "^5.3.0",

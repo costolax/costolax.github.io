@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // Indirizzo del sito: il repository costolax/costolax.github.io viene pubblicato sul dominio costolax.com
 // (vedi README, "Collegare il dominio" e public/CNAME). Serve per i link canonici e le anteprime nei link condivisi.
@@ -15,6 +16,12 @@ export default defineConfig({
   site: SITE,
   base: BASE,
   trailingSlash: 'ignore',
+  integrations: [
+    // Elenco delle pagine per i motori di ricerca (sitemap-index.xml, indicato in public/robots.txt).
+    // Le pagine nascoste ai motori (404 e grazie) restano fuori. Il collegamento tra le versioni italiana e inglese
+    // è già nei tag hreflang di ogni pagina (src/layouts/Base.astro).
+    sitemap({ filter: (pagina) => !/\/(404|grazie)\/?$/.test(pagina) }),
+  ],
   image: {
     // in sviluppo il browser tiene le immagini un'ora e non un anno (vedi src/lib/immagini-sviluppo.ts)
     ...(SVILUPPO && { endpoint: { entrypoint: './src/lib/immagini-sviluppo.ts' } }),
