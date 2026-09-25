@@ -170,7 +170,7 @@ const it = {
 const en: typeof it = {
   motto: 'The rotten comics magazine',
   descrizione:
-    'Costolax is a comics collective and its magazine of rotten comics: books, prints, original art and fairs.',
+    'Costolax is a comics collective and its magazine of rotten comics: comics, prints, original art and fairs.',
   nastro: ['Comics', 'Pins', 'Original art', 'Fairs and events', 'Stickers'],
   saltaAlContenuto: 'Skip to content',
   tornaAllaHome: 'back to the home page',
@@ -218,7 +218,7 @@ const en: typeof it = {
     leggiIFumetti: 'Browse the comics',
     nuovoNumero: 'The new issue',
     bandaAlt: 'Pippa Calciepugni, back cover',
-    nuvoletta: "Issue 0 is free: download it, read it, pass it to someone you shouldn't.",
+    nuvoletta: 'Grab this comic for free! Download the N.0 PDF and spread the word.',
     scaricaNumeroZero: 'Download N.0 →',
     dalloShop: 'From the shop',
     tuttoLoShop: 'The whole shop →',
@@ -231,8 +231,8 @@ const en: typeof it = {
   },
   fumetti: {
     titolo: 'Comics',
-    descrizione: "All Costolax comics: the magazine, the stories and the collective's books.",
-    intro: 'The magazine of the collective. Issue 0 is a free download: open the cover.',
+    descrizione: "All Costolax comics, the collective's magazine of rotten comics.",
+    intro: 'The issues of the magazine released so far. N.0 is a free download, so you have no excuses.',
     anteprima: 'Preview',
     apreImmagine: '(opens the full-size image)',
     portaloACasa: 'Take it home',
@@ -252,7 +252,7 @@ const en: typeof it = {
     titolo: 'Authors',
     titoloPagina: 'The collective',
     descrizione: 'Who draws and writes Costolax: the authors of the collective.',
-    intro: 'Who draws, who writes and who takes the blame.',
+    intro: 'The twisted minds behind the magazine, but the Costolax team is always growing.',
     suoiFumetti: 'Issues they worked on',
     sueStorie: 'Their stories',
     portfolio: 'Portfolio',
@@ -263,7 +263,7 @@ const en: typeof it = {
   storie: {
     titolo: 'Stories',
     descrizione: 'The Costolax stories: who writes them, who draws them and which issues they are in.',
-    intro: 'The series and stories of the magazine, and which issues to find them in.',
+    intro: 'The stories and characters of the Costolax stable.',
     suNumeri: 'In',
     inCorso: 'Ongoing',
     unaStoria: (titolo) => `${titolo}, a Costolax story`,
@@ -286,7 +286,7 @@ const en: typeof it = {
   eventi: {
     titolo: 'Fairs',
     descrizione: 'Fairs, festivals and events where you can find Costolax: dates, venues and stands.',
-    intro: 'Fairs, festivals and nights where you can find us with comics, prints and original art.',
+    intro: 'The Costolax collective is always on tour: find out where to catch us.',
     prossimi: 'Upcoming fairs',
     passati: 'Where we have been',
     nessuno: 'No dates planned yet. Follow us on Instagram to find out where we will be.',
