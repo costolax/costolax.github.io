@@ -1,6 +1,6 @@
 ---
 # TODO: verificare se è scritta e disegnata da Sangue Sarmatico
-titolo: Zia Costola
+titolo: Zia Costola Presenta
 autori:
   - artista: sangue-sarmatico
     ruolo: Testi e disegni

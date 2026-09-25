@@ -1,5 +1,4 @@
 ---
-import { getEntry } from 'astro:content';
 import { Picture } from 'astro:assets';
 import Testo from '../Testo.astro';
 import Ingrandibile from '../Ingrandibile.astro';
@@ -9,10 +8,7 @@ import ProdottoCard from '../ProdottoCard.astro';
 import ArtistaCard from '../ArtistaCard.astro';
 import EventoCard from '../EventoCard.astro';
 import banda from '../../assets/laterali/pippa-calciepugni-quarta-di-copertina.webp';
-import paginaDieci from '../../assets/laterali/costolax-n0-a-calci-nel-culo-pagina-10.webp';
-import meccanico from '../../assets/laterali/meccanico-oscuro.webp';
-import donatella from '../../assets/illustrazioni/donatella.webp';
-import coverIntro from '../../assets/laterali/costolax-n0-intro.webp';
+import sharkin from '../../assets/illustrazioni/keep-on-sharkin.webp';
 import scritta from '../../assets/marchio/scritta-costolax.webp';
 import { sito } from '../../site.config';
 import { eventiDivisi, inclina, ordinati, tr } from '../../lib/contenuti';
@@ -35,44 +31,31 @@ const inEvidenza = fumetti.filter((f) => f.data.inEvidenza);
 const [numero] = inEvidenza.length > 0 ? inEvidenza : fumetti;
 const numeroGratis = fumetti.find((f) => f.data.pdfGratis);
 const lancio = numero ? tr(numero.data, 'lancio', lingua) : undefined;
-const sommarioNumero = numero
-  ? await Promise.all(
-      numero.data.sommario.map(async (voce) => {
-        const storia = await getEntry(voce.storia);
-        return { storia, titolo: tr(voce, 'titolo', lingua) ?? tr(storia.data, 'titolo', lingua), nota: tr(voce, 'nota', lingua) };
-      }),
-    )
-  : [];
 const pdfGratis = numeroGratis?.data.pdfGratis ? url(numeroGratis.data.pdfGratis) : undefined;
 const prossimiEventi = (await eventiDivisi()).prossimi.slice(0, 2);
 
-// Tavole della striscia decorativa, con la parte da tenere in vista quando vengono ritagliate.
-const striscia = [
-  { immagine: paginaDieci, inquadratura: '50% 20%' },
-  { immagine: meccanico, inquadratura: '50% 30%' },
-  { immagine: donatella, inquadratura: '50% 45%' },
-  { immagine: coverIntro, inquadratura: '50% 40%' },
-];
 ---
 
 <Base lingua={lingua}>
-  <!-- 1. presentazione: la scritta della copertina e Pippa (solo da computer) -->
+  <!-- 1. presentazione: la scritta della copertina e, nello stesso riquadro, Pippa (solo da computer) -->
   <section class="wrap apertura" aria-label={h.primoPiano}>
     <div class="riquadro vignetta-titolo">
       <span class="didascalia">{testo.motto}</span>
-      <h1 class="lettering">
-        <Picture formats={['avif']} fallbackFormat="webp" src={scritta} alt={sito.nome} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 88vw, 640px" loading="eager" />
-      </h1>
-      <p class="sottotitolo">{h.sottotitolo}</p>
-      <div class="azioni">
-        <a class="btn" href={link(lingua, 'fumetti')}>{h.leggiIFumetti}</a>
-        <a class="btn btn-chiaro" href={link(lingua, 'shop')}>{h.vaiAlloShop}</a>
+      <div class="titolo-testo">
+        <h1 class="lettering">
+          <Picture formats={['avif']} fallbackFormat="webp" src={scritta} alt={sito.nome} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 88vw, 640px" loading="eager" />
+        </h1>
+        <p class="sottotitolo">{h.sottotitolo}</p>
+        <div class="azioni">
+          <a class="btn" href={link(lingua, 'fumetti')}>{h.leggiIFumetti}</a>
+          <a class="btn btn-chiaro" href={link(lingua, 'shop')}>{h.vaiAlloShop}</a>
+        </div>
       </div>
-    </div>
 
-    <!-- lazy: da telefono è nascosta e così non viene nemmeno scaricata -->
-    <div class="riquadro vignetta-banda inclina-d" style={`--proporzioni: ${banda.width} / ${banda.height}`}>
-      <Ingrandibile src={banda} alt={h.bandaAlt} lingua={lingua} widths={[640, 900, 1200]} sizes="380px" loading="lazy" />
+      <!-- lazy: da telefono è nascosta e così non viene nemmeno scaricata -->
+      <div class="vignetta-banda">
+        <Ingrandibile src={banda} alt={h.bandaAlt} lingua={lingua} widths={[640, 900, 1200]} sizes="420px" loading="lazy" />
+      </div>
     </div>
   </section>
 
@@ -109,18 +92,6 @@ const striscia = [
           <div class="nuvoletta lancio">
             {lancio ? <p>{lancio}</p> : <Testo voce={numero} lingua={lingua} />}
           </div>
-          {
-            sommarioNumero.length > 0 && (
-              <ol class="indice-storie">
-                {sommarioNumero.map(({ storia, titolo, nota }) => (
-                  <li>
-                    <a href={`${link(lingua, 'storie')}#${storia.id}`}>{titolo}</a>
-                    {nota && <span> ({nota})</span>}
-                  </li>
-                ))}
-              </ol>
-            )
-          }
           <div class="azioni">
             <a class="btn" href={link(lingua, 'fumetti', numero.id)}>
               {h.scopriIlNumero}
@@ -169,19 +140,10 @@ const striscia = [
     )
   }
 
-  <!-- 4. striscia di tavole (su telefono scorre di lato); si aprono a schermo intero -->
-  <section class="striscia-contenitore">
-    <div class="wrap striscia">
-      {
-        striscia.map((tavola, i) => (
-          <div
-            class:list={['riquadro', 'striscia-vignetta', inclina(i) && `inclina-${inclina(i)}`]}
-            style={`aspect-ratio: ${tavola.immagine.width} / ${tavola.immagine.height}`}
-          >
-            <Ingrandibile src={tavola.immagine} alt="" lingua={lingua} widths={[640, 900, 1200]} sizes="(max-width: 700px) 62vw, 290px" style={`object-position: ${tavola.inquadratura}`} />
-          </div>
-        ))
-      }
+  <!-- 4. l'illustrazione "Keep on Sharkin'"; si apre a schermo intero -->
+  <section class="wrap illustrazione-contenitore">
+    <div class="riquadro illustrazione inclina-s" style={`aspect-ratio: ${sharkin.width} / ${sharkin.height}`}>
+      <Ingrandibile src={sharkin} alt="Keep on Sharkin'" lingua={lingua} widths={[640, 900, 1384]} sizes="(max-width: 1000px) 92vw, 900px" />
     </div>
   </section>
 
@@ -245,20 +207,24 @@ const striscia = [
   /* ---------- 1. presentazione ---------- */
 
   .apertura {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
-    gap: calc(var(--gutter) + 10px);
     padding-top: clamp(16px, 3vw, 32px);
   }
 
+  /* un solo riquadro: a sinistra il titolo, a destra Pippa alta quanto tutto il riquadro */
   .vignetta-titolo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 36%);
+    /* lo stesso giallo del fondo dell'illustrazione di Pippa, così le due vignette non si staccano */
+    background: #f5d201;
+    color: var(--nero);
+  }
+
+  .titolo-testo {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 18px;
     padding: clamp(44px, 5vw, 56px) clamp(20px, 4vw, 44px) clamp(24px, 4vw, 40px);
-    background: var(--giallo);
-    color: var(--nero);
   }
 
   /* la scritta della copertina (dritta: ruotata diventerebbe sfocata) */
@@ -278,11 +244,11 @@ const striscia = [
     font-weight: 500;
   }
 
-  /* Pippa con le sue proporzioni (--proporzioni nel markup): si vede intera */
+  /* Pippa separata dal titolo da una linea, come due vignette della stessa tavola */
   .vignetta-banda {
-    align-self: center;
-    aspect-ratio: var(--proporzioni);
+    position: relative;
     overflow: hidden;
+    border-left: var(--tratto) solid var(--inchiostro);
   }
 
   .vignetta-banda :global(img) {
@@ -344,31 +310,6 @@ const striscia = [
     margin: 0;
   }
 
-  .indice-storie {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 12px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .indice-storie li {
-    padding: 0.25em 0.7em;
-    border: 2px solid var(--inchiostro);
-    background: var(--bianco);
-    box-shadow: 3px 3px 0 var(--inchiostro);
-    font-family: var(--font-mano);
-  }
-
-  .indice-storie a {
-    text-decoration: none;
-  }
-
-  .indice-storie a:hover {
-    color: var(--magenta);
-  }
-
   /* ---------- 3. il numero gratuito ---------- */
 
   .gratis-riquadro {
@@ -401,25 +342,19 @@ const striscia = [
     align-items: center;
   }
 
-  /* ---------- 4. striscia di tavole ---------- */
+  /* ---------- 4. illustrazione ---------- */
 
-  .striscia-contenitore {
+  .illustrazione-contenitore {
     padding-top: clamp(48px, 7vw, 80px);
   }
 
-  .striscia {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: calc(var(--gutter) + 6px);
-  }
-
-  /* ogni tavola ha le sue proporzioni (vedi style nel markup): si vede intera */
-  .striscia-vignetta {
-    align-self: start;
+  .illustrazione {
+    max-width: 900px;
+    margin-inline: auto;
     overflow: hidden;
   }
 
-  .striscia-vignetta :global(img) {
+  .illustrazione :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -462,7 +397,7 @@ const striscia = [
   /* ---------- telefono e tablet ---------- */
 
   @media (max-width: 900px) {
-    .apertura {
+    .vignetta-titolo {
       grid-template-columns: 1fr;
     }
 
@@ -482,8 +417,7 @@ const striscia = [
   }
 
   @media (max-width: 700px) {
-    /* striscia e collettivo scorrono di lato invece di allungare la pagina */
-    .striscia,
+    /* il collettivo scorre di lato invece di allungare la pagina */
     .collettivo {
       display: grid;
       grid-auto-flow: column;
@@ -499,12 +433,10 @@ const striscia = [
       scrollbar-width: none;
     }
 
-    .striscia::-webkit-scrollbar,
     .collettivo::-webkit-scrollbar {
       display: none;
     }
 
-    .striscia > *,
     .collettivo > :global(*) {
       scroll-snap-align: start;
     }

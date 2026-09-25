@@ -31,7 +31,7 @@ const it = {
   motto: 'La rivista dei fumetti marci',
   descrizione:
     'Costolax è un collettivo di fumettisti e la sua rivista di fumetti marci: fumetti, stampe, tavole originali e fiere.',
-  nastro: ['Fumetti', 'Stampe', 'Tavole originali', 'Fiere ed eventi', 'Fatto a mano'],
+  nastro: ['Fumetti', 'Spille', 'Tavole originali', 'Fiere ed eventi', 'Adesivi'],
   saltaAlContenuto: 'Vai al contenuto',
   tornaAllaHome: 'torna alla home',
   menuPrincipale: 'Menu principale',
@@ -78,7 +78,7 @@ const it = {
     leggiIFumetti: 'Sfoglia i fumetti',
     nuovoNumero: 'Il nuovo numero',
     bandaAlt: 'Pippa Calciepugni, quarta di copertina',
-    nuvoletta: 'Il numero 0 è gratis: scaricalo, leggilo, passalo a chi non dovresti.',
+    nuvoletta: 'Beccati sto fumetto gratis! Scarica il pdf del n.0 e diffondi il verbo.',
     scaricaNumeroZero: 'Scarica il N.0 →',
     dalloShop: 'Dallo shop',
     tuttoLoShop: 'Tutto lo shop →',
@@ -92,7 +92,7 @@ const it = {
   fumetti: {
     titolo: 'Fumetti',
     descrizione: 'Tutti i fumetti di Costolax, la rivista dei fumetti marci del collettivo.',
-    intro: 'La rivista del collettivo. Il numero 0 si scarica gratis: apri la copertina.',
+    intro: 'I numeri della rivista usciti finora. Il n.0 è scaricabile gratis quindi non avete scuse.',
     anteprima: 'Anteprima',
     apreImmagine: "(apre l'immagine a grandezza piena)",
     portaloACasa: 'Portalo a casa',
@@ -123,7 +123,7 @@ const it = {
   storie: {
     titolo: 'Storie',
     descrizione: 'Le storie di Costolax: chi le scrive, chi le disegna e in quali numeri trovarle.',
-    intro: 'Le serie e le storie della rivista, e in quali numeri trovarle.',
+    intro: 'Le storie e i personaggi della scuderia Costolax.',
     suNumeri: 'Su',
     inCorso: 'In corso',
     unaStoria: (titolo: string) => `${titolo}, una storia di Costolax`,
@@ -171,7 +171,7 @@ const en: typeof it = {
   motto: 'The rotten comics magazine',
   descrizione:
     'Costolax is a comics collective and its magazine of rotten comics: books, prints, original art and fairs.',
-  nastro: ['Comics', 'Prints', 'Original art', 'Fairs and events', 'Handmade'],
+  nastro: ['Comics', 'Pins', 'Original art', 'Fairs and events', 'Stickers'],
   saltaAlContenuto: 'Skip to content',
   tornaAllaHome: 'back to the home page',
   menuPrincipale: 'Main menu',

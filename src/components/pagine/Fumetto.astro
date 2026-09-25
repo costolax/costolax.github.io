@@ -111,14 +111,14 @@ const sommario = await Promise.all(
         sommario.length > 0 && (
           <div class="sommario">
             <h2>{testo.sommario}</h2>
-            <ol>
+            <ul>
               {sommario.map(({ storia, titolo, nota }) => (
                 <li>
                   <a href={`${link(lingua, 'storie')}#${storia.id}`}>{titolo}</a>
                   {nota && <span class="nota-sommario"> ({nota})</span>}
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
         )
       }
@@ -247,11 +247,13 @@ const sommario = await Promise.all(
     font-size: 1.3rem;
   }
 
-  .sommario ol {
+  /* trattini invece dei numeri: è un elenco, non una classifica */
+  .sommario ul {
     display: grid;
     gap: 6px;
     margin: 0;
     padding-left: 1.4em;
+    list-style-type: '– ';
   }
 
   .sommario li::marker {

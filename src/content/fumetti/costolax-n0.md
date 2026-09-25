@@ -14,8 +14,8 @@ autori:
 copertina: ../../assets/fumetti/costolax-n0.webp
 copertinaAlt: Copertina viola di Costolax N.0, una ragazza tatuata con calze a rete che incide la scritta Costolax, 500 lire
 copertinaAltEn: Purple cover of Costolax N.0, a tattooed girl in fishnets carving the word Costolax, 500 lire
-uscita: Marzo 2026
-uscitaEn: March 2026
+uscita: Maggio 2026
+uscitaEn: May 2026
 pagine: 64
 colori: Bianco e nero
 coloriEn: Black and white
