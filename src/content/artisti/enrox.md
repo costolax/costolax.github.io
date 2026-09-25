@@ -6,6 +6,7 @@ immagine: ../../assets/ritratti/enrox.webp
 immagineAlt: Ritratto a inchiostro di un uomo con occhiali tondi e cravatta, su sfondo rosso
 immagineAltEn: Ink portrait of a man with round glasses and a tie, on a red background
 instagram: https://www.instagram.com/enrox__
+email: enricofavero2@gmail.com
 testoEn: |
   Born in 2002 on paper, but with a perceived age of around 100.
 

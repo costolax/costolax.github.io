@@ -20,6 +20,7 @@ const artisti = defineCollection({
       immagineAlt: z.string(),
       immagineAltEn: z.string().optional(),
       instagram: z.url().optional(),
+      email: z.email().optional(),
       link: z.array(z.object({ label: z.string(), url: z.url() })).default([]),
       // Membro fondatore del collettivo: compare nella sezione "Membri fondatori" della pagina Autori.
       fondatore: z.boolean().default(false),

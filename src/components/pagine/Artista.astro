@@ -16,7 +16,7 @@ interface Props {
 const { artista, lingua } = Astro.props;
 const testo = t(lingua).artisti;
 const dati = artista.data;
-const { nome, immagine, instagram, link } = dati;
+const { nome, immagine, instagram, email, link } = dati;
 const ruolo = tr(dati, 'ruolo', lingua);
 
 // Le sue storie, e i numeri in cui è uscito qualcosa di suo (o che firma direttamente).
@@ -49,8 +49,13 @@ const collegamenti = [...(instagram ? [{ label: 'Instagram', url: instagram }] :
         <Testo voce={artista} lingua={lingua} />
       </div>
       {
-        collegamenti.length > 0 && (
+        (collegamenti.length > 0 || email) && (
           <div class="azioni">
+            {email && (
+              <a class="btn btn-chiaro" href={`mailto:${email}`}>
+                {email}
+              </a>
+            )}
             {collegamenti.map((c) => (
               <a class="btn btn-chiaro" href={c.url} target="_blank" rel="noopener">
                 {c.label}

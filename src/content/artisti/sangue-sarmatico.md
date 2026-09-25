@@ -6,6 +6,7 @@ immagine: ../../assets/ritratti/sangue-sarmatico.webp
 immagineAlt: Ragazza con occhiali da sole e giacca rosa, acquerello su sfondo lilla
 immagineAltEn: Girl with sunglasses and a pink jacket, watercolour on a lilac background
 instagram: https://www.instagram.com/piero_spotacia
+email: debortoli.pier@gmail.com
 testoEn: |
   Born in 2000, son of the wild land of Sarmede (TV), which forged his body and spirit.
 
