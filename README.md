@@ -209,16 +209,21 @@ Il repository è `costolax/costolax.github.io`: GitHub lo pubblica alla radice d
 1. Su GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions** (una volta sola).
 2. Fate push del ramo `main`: il sito si compila e si pubblica da solo in un paio di minuti (scheda **Actions**).
 
-## Collegare il dominio (es. costolax.it)
+## Collegare il dominio (costolax.com)
 
-1. Comprate il dominio da un registrar (~10–15 €/anno).
-2. Nel pannello DNS del registrar aggiungete:
+Il dominio `costolax.com` è registrato su Hostinger. Il sito ha già `SITE = 'https://costolax.com'` in `astro.config.mjs`
+e il file `public/CNAME` con dentro `costolax.com`.
+
+1. Su Hostinger: **Domini → costolax.com → DNS / Nameserver**. Cancellate i record **A** per `@` e **CNAME** per `www`
+   che ci sono già (sono del parcheggio di Hostinger) e aggiungete:
    - 4 record **A** per `@`: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - 4 record **AAAA** per `@` (facoltativi, per IPv6): `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`
    - 1 record **CNAME** per `www` → `costolax.github.io`
-3. In `astro.config.mjs` impostate `SITE = 'https://costolax.it'` (`BASE` è già `'/'`).
-4. Create il file `public/CNAME` con dentro solo `costolax.it`.
-5. Su GitHub: **Settings → Pages → Custom domain** = `costolax.it`, poi spuntate **Enforce HTTPS** quando diventa disponibile.
-6. Aggiornate l'indirizzo di ritorno (`/grazie/`) nei Payment Link di Stripe.
+2. Su GitHub: **Settings → Pages → Custom domain** = `costolax.com`, poi spuntate **Enforce HTTPS** quando diventa
+   disponibile (il certificato arriva da solo, di solito entro un'ora).
+3. Consigliato: verificate il dominio nelle impostazioni dell'organizzazione GitHub (**Settings → Pages → Add a domain**),
+   così nessun altro può usarlo per un suo sito.
+4. Aggiornate l'indirizzo di ritorno (`/grazie/`) nei Payment Link di Stripe.
 
 ---
 

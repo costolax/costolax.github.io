@@ -1,10 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// Indirizzo del sito: il repository costolax/costolax.github.io viene pubblicato alla radice di https://costolax.github.io.
-// Serve per i link canonici e le anteprime nei link condivisi. Se collegate un dominio proprio (vedi README,
-// "Collegare il dominio") impostate SITE = 'https://costolax.it' e create public/CNAME.
-const SITE = 'https://costolax.github.io';
+// Indirizzo del sito: il repository costolax/costolax.github.io viene pubblicato sul dominio costolax.com
+// (vedi README, "Collegare il dominio" e public/CNAME). Serve per i link canonici e le anteprime nei link condivisi.
+const SITE = 'https://costolax.com';
 const BASE = '/';
 
 // Con `astro dev` le immagini vengono compresse al momento, a ogni richiesta (non restano salvate):
