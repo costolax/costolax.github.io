@@ -30,8 +30,9 @@ const { lingua, sezione = 'home', id, titolo, immagine, nascondiDaiMotori = fals
 const testo = t(lingua);
 const descrizione = Astro.props.descrizione ?? testo.descrizione;
 
-// In home il titolo è solo il nome: nei risultati di ricerca compare "Costolax" seguito dalla descrizione.
-const titoloCompleto = titolo ? `${titolo} · ${sito.nome}` : sito.nome;
+// In home il titolo è il nome seguito dal motto (es. "Costolax · La rivista dei fumetti marci"):
+// il solo nome è troppo corto per i motori di ricerca. Il nome del sito per Google arriva dai dati strutturati.
+const titoloCompleto = titolo ? `${titolo} · ${sito.nome}` : `${sito.nome} · ${testo.motto}`;
 const canonico = new URL(Astro.url.pathname, Astro.site);
 const versioni = (Object.keys(lingue) as Lingua[]).map((l) => ({
   lingua: l,

@@ -46,8 +46,8 @@ const nastro = [testo.motto, ...fiere, ...testo.nastro];
 
 <header class="testa wrap">
   <a class="marchio" href={link(lingua, 'home')} aria-label={`${sito.nome}, ${testo.tornaAllaHome}`}>
-    <Image src={logo} alt="" width={60} height={60} densities={[1, 2, 3]} loading="eager" />
-    <Image class="marchio-nome" src={scritta} alt="" width={140} densities={[1, 2, 3]} loading="eager" />
+    <Image src={logo} alt={testo.logo} width={60} height={60} densities={[1, 2, 3]} loading="eager" />
+    <Image class="marchio-nome" src={scritta} alt={sito.nome} width={140} densities={[1, 2, 3]} loading="eager" />
   </a>
 
   <div class="testa-destra">
