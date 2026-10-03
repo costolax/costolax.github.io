@@ -42,8 +42,10 @@ const prossimiEventi = (await eventiDivisi()).prossimi.slice(0, 2);
     <div class="riquadro vignetta-titolo">
       <span class="didascalia">{testo.motto}</span>
       <div class="titolo-testo">
+        <!-- il titolo è un'immagine: il nome resta anche come testo (nascosto) perché i motori di ricerca lo leggano -->
         <h1 class="lettering">
-          <Picture formats={['avif']} fallbackFormat="webp" src={scritta} alt={sito.nome} widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 88vw, 640px" loading="eager" />
+          <span class="sr-only">{sito.nome}</span>
+          <Picture formats={['avif']} fallbackFormat="webp" src={scritta} alt=""widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 88vw, 640px" loading="eager" />
         </h1>
         <p class="sottotitolo">{h.sottotitolo}</p>
         <div class="azioni">
