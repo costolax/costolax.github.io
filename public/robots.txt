@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# La scritta "Costolax" (in testata e in home) non va usata come miniatura nei risultati di Google:
+# così Google sceglie l'immagine indicata nella pagina (la copertina del N.0, vedi src/layouts/Base.astro).
+User-agent: Googlebot-Image
+Disallow: /_astro/scritta-costolax.
+
 Sitemap: https://costolax.com/sitemap-index.xml

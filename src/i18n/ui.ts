@@ -30,7 +30,7 @@ export type TipoProdotto = (typeof tipiProdotto)[number];
 const it = {
   motto: 'La rivista dei fumetti marci',
   descrizione:
-    'Costolax è un collettivo di fumettisti e la sua rivista di fumetti marci: fumetti, stampe, tavole originali e fiere.',
+    'Costolax è un collettivo di fumettisti indipendenti incazzati e la sua rivista di fumetti marci. Scarica gratis il N.0, compra albi, stampe e tavole originali.',
   nastro: ['Fumetti', 'Spille', 'Tavole originali', 'Fiere ed eventi', 'Adesivi'],
   saltaAlContenuto: 'Vai al contenuto',
   tornaAllaHome: 'torna alla home',
@@ -171,7 +171,7 @@ const it = {
 const en: typeof it = {
   motto: 'The rotten comics magazine',
   descrizione:
-    'Costolax is a comics collective and its magazine of rotten comics: comics, prints, original art and fairs.',
+    "Costolax is a collective of pissed-off independent cartoonists and their rotten comics magazine. Download N.0 for free, buy comics, prints and original art.",
   nastro: ['Comics', 'Pins', 'Original art', 'Fairs and events', 'Stickers'],
   saltaAlContenuto: 'Skip to content',
   tornaAllaHome: 'back to the home page',

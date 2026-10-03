@@ -41,7 +41,8 @@ const versioni = (Object.keys(lingue) as Lingua[]).map((l) => ({
 const anteprima = await getImage({ src: immagine ?? copertinaPredefinita, width: 1080, format: 'jpg' });
 const anteprimaUrl = new URL(anteprima.src, Astro.site);
 
-// Dati strutturati solo in home: dicono a Google il nome del sito ("Costolax") e il logo del collettivo.
+// Dati strutturati solo in home: dicono a Google il nome del sito ("Costolax"), il logo del collettivo
+// e l'immagine principale della pagina (la stessa dell'anteprima nei link condivisi).
 const home = new URL(link(lingua, 'home'), Astro.site);
 const datiStrutturati =
   sezione === 'home' && !nascondiDaiMotori
@@ -53,6 +54,15 @@ const datiStrutturati =
           url: home,
           inLanguage: lingua,
           description: descrizione,
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: titoloCompleto,
+          url: canonico,
+          inLanguage: lingua,
+          description: descrizione,
+          primaryImageOfPage: { '@type': 'ImageObject', url: anteprimaUrl, width: anteprima.attributes.width, height: anteprima.attributes.height },
         },
         {
           '@context': 'https://schema.org',
@@ -101,6 +111,8 @@ const datiStrutturati =
     <meta property="og:description" content={descrizione} />
     <meta property="og:url" content={canonico} />
     <meta property="og:image" content={anteprimaUrl} />
+    <meta name="twitter:image" content={anteprimaUrl} />
+    <link rel="image_src" href={anteprimaUrl} />
     <meta name="twitter:card" content="summary_large_image" />
     {datiStrutturati && <script type="application/ld+json" set:html={datiStrutturati} />}
   </head>
