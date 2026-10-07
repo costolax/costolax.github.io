@@ -83,7 +83,9 @@ const datiStrutturati =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titoloCompleto}</title>
     <meta name="description" content={descrizione} />
-    <link rel="canonical" href={canonico} />
+    <!-- Le pagine nascoste ai motori (404, grazie) non indicano un indirizzo canonico: noindex e canonico insieme
+         sono segnali in conflitto per Google e Bing, e la 404 puntava a /404/, che non esiste. -->
+    {!nascondiDaiMotori && <link rel="canonical" href={canonico} />}
     {
       !nascondiDaiMotori &&
         versioni.map((v) => <link rel="alternate" hreflang={v.lingua} href={new URL(v.href, Astro.site)} />)
@@ -109,7 +111,7 @@ const datiStrutturati =
     <meta property="og:site_name" content={sito.nome} />
     <meta property="og:title" content={titoloCompleto} />
     <meta property="og:description" content={descrizione} />
-    <meta property="og:url" content={canonico} />
+    {!nascondiDaiMotori && <meta property="og:url" content={canonico} />}
     <meta property="og:image" content={anteprimaUrl} />
     <meta name="twitter:image" content={anteprimaUrl} />
     <link rel="image_src" href={anteprimaUrl} />
