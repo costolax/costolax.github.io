@@ -18,9 +18,9 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [
     // Elenco delle pagine per i motori di ricerca (sitemap-index.xml, indicato in public/robots.txt).
-    // Le pagine nascoste ai motori (404 e grazie) restano fuori. Il collegamento tra le versioni italiana e inglese
+    // Le pagine nascoste ai motori (404) restano fuori. Il collegamento tra le versioni italiana e inglese
     // è già nei tag hreflang di ogni pagina (src/layouts/Base.astro).
-    sitemap({ filter: (pagina) => !/\/(404|grazie)\/?$/.test(pagina) }),
+    sitemap({ filter: (pagina) => !/\/404\/?$/.test(pagina) }),
   ],
   image: {
     // in sviluppo il browser tiene le immagini un'ora e non un anno (vedi src/lib/immagini-sviluppo.ts)

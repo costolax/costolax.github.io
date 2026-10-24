@@ -83,7 +83,7 @@ const datiStrutturati =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titoloCompleto}</title>
     <meta name="description" content={descrizione} />
-    <!-- Le pagine nascoste ai motori (404, grazie) non indicano un indirizzo canonico: noindex e canonico insieme
+    <!-- La pagina nascosta ai motori (404) non indica un indirizzo canonico: noindex e canonico insieme
          sono segnali in conflitto per Google e Bing, e la 404 puntava a /404/, che non esiste. -->
     {!nascondiDaiMotori && <link rel="canonical" href={canonico} />}
     {

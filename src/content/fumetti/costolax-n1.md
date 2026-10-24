@@ -1,5 +1,5 @@
 ---
-# Il nuovo numero: presto alle fiere e nello shop. Quando esce togliete "inArrivo" (o mettete false).
+# Il nuovo numero: presto alle fiere e nei negozi. Quando esce togliete "inArrivo" (o mettete false).
 titolo: Costolax N.1
 # Tutto il collettivo firma il N.1: stesso ruolo, quindi compaiono insieme sotto "Autori".
 autori:

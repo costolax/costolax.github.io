@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import Testata from '../Testata.astro';
+import decorazione from '../../assets/laterali/meccanico-oscuro.webp';
+import { sito } from '../../site.config';
+import { inclina } from '../../lib/contenuti';
+import { link, t, type Lingua } from '../../i18n/ui';
+
+interface Props {
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const tutto = t(lingua);
+const testo = tutto.negozi;
+// Il link alla mappa cerca nome e indirizzo del negozio su Google Maps.
+const negozi = sito.negozi.map((negozio) => ({
+  ...negozio,
+  mappa: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${negozio.nome}, ${negozio.indirizzo}, ${negozio.cap} ${negozio.citta}`,
+  )}`,
+}));
+---
+
+<Base lingua={lingua} sezione="negozi" titolo={testo.titolo} descrizione={testo.descrizione}>
+  <Testata decorazione={decorazione} lingua={lingua} inquadratura="50% 25%">
+    <h1>{testo.titoloPagina}</h1>
+    <p>
+      {testo.intro}{' '}
+      <a href={link(lingua, 'eventi')}>{tutto.menu.eventi} →</a>
+    </p>
+  </Testata>
+
+  <section class="wrap sezione">
+    <ul class="negozi">
+      {
+        negozi.map((negozio, i) => (
+          <li class:list={['riquadro', 'negozio', inclina(i) && `inclina-${inclina(i)}`]}>
+            <span class="didascalia">{negozio.citta}</span>
+            <h2>{negozio.nome}</h2>
+            <address>
+              {negozio.indirizzo}
+              <br />
+              {negozio.cap} {negozio.citta} ({negozio.provincia})
+            </address>
+            <a class="link-freccia" href={negozio.mappa} target="_blank" rel="noopener">
+              {testo.mappa} →<span class="sr-only"> {tutto.nuovaScheda}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  :global(.testata) a {
+    text-decoration-color: var(--magenta);
+    text-decoration-thickness: 2px;
+  }
+
+  .negozi {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: calc(var(--gutter) + 16px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .negozio {
+    display: grid;
+    align-content: start;
+    gap: 0.6em;
+    padding: 44px 20px 20px;
+  }
+
+  .negozio h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.1;
+  }
+
+  .negozio address {
+    font-style: normal;
+  }
+
+  .negozio .link-freccia {
+    justify-self: start;
+    margin-top: 0.2em;
+  }
+</style>

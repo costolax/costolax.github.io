@@ -4,7 +4,6 @@ import Testo from '../Testo.astro';
 import Ingrandibile from '../Ingrandibile.astro';
 import Specifiche from '../Specifiche.astro';
 import Base from '../../layouts/Base.astro';
-import ProdottoCard from '../ProdottoCard.astro';
 import ArtistaCard from '../ArtistaCard.astro';
 import EventoCard from '../EventoCard.astro';
 import banda from '../../assets/laterali/pippa-calciepugni-quarta-di-copertina.webp';
@@ -24,7 +23,6 @@ const testo = t(lingua);
 const h = testo.home;
 
 const fumetti = await ordinati('fumetti');
-const prodotti = (await ordinati('prodotti')).slice(0, 4);
 const artisti = await ordinati('artisti');
 
 const inEvidenza = fumetti.filter((f) => f.data.inEvidenza);
@@ -50,7 +48,7 @@ const prossimiEventi = (await eventiDivisi()).prossimi.slice(0, 2);
         <p class="sottotitolo">{h.sottotitolo}</p>
         <div class="azioni">
           <a class="btn" href={link(lingua, 'fumetti')}>{h.leggiIFumetti}</a>
-          <a class="btn btn-chiaro" href={link(lingua, 'shop')}>{h.vaiAlloShop}</a>
+          <a class="btn btn-chiaro" href={link(lingua, 'negozi')}>{h.dovePrenderlo}</a>
         </div>
       </div>
 
@@ -170,30 +168,7 @@ const prossimiEventi = (await eventiDivisi()).prossimi.slice(0, 2);
     )
   }
 
-  <!-- 6. shop (compare quando ci sono prodotti) -->
-  {
-    prodotti.length > 0 && (
-      <section class="fascia-shop">
-        <div class="wrap sezione">
-          <div class="sezione-testa">
-            <h2>
-              <span class="titolo-sezione">{h.dalloShop}</span>
-            </h2>
-            <a class="link-freccia" href={link(lingua, 'shop')}>
-              {h.tuttoLoShop}
-            </a>
-          </div>
-          <div class="griglia">
-            {prodotti.map((prodotto, i) => (
-              <ProdottoCard prodotto={prodotto} lingua={lingua} inclina={inclina(i + 1)} />
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- 7. il collettivo (su telefono scorre di lato) -->
+  <!-- 6. il collettivo (su telefono scorre di lato) -->
   <section class="wrap sezione">
     <div class="sezione-testa">
       <h2><span class="titolo-sezione">{h.collettivo}</span></h2>
@@ -368,32 +343,6 @@ const prossimiEventi = (await eventiDivisi()).prossimi.slice(0, 2);
     display: grid;
     gap: calc(var(--gutter) + 16px);
     max-width: 900px;
-  }
-
-  /* ---------- 6. shop ---------- */
-
-  .fascia-shop {
-    background: var(--nero);
-    background-image: radial-gradient(rgb(168 35 138 / 0.35) 18%, transparent 20%);
-    background-size: 10px 10px;
-    color: var(--panna);
-  }
-
-  .fascia-shop .titolo-sezione {
-    padding: 0.1em 0.3em;
-    background: var(--giallo);
-    color: var(--nero);
-    box-shadow: 4px 4px 0 var(--magenta);
-  }
-
-  .fascia-shop .link-freccia {
-    color: var(--panna);
-    border-color: var(--giallo);
-  }
-
-  .fascia-shop :global(.riquadro) {
-    color: var(--inchiostro);
-    box-shadow: var(--ombra) var(--ombra) 0 var(--magenta);
   }
 
   /* ---------- telefono e tablet ---------- */

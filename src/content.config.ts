@@ -1,7 +1,6 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { tipiProdotto } from './i18n/ui';
 
 // Traduzioni in inglese: ogni testo può avere un campo gemello con "En" in fondo
 // (es. titolo → titoloEn). Se manca, la versione inglese del sito mostra l'italiano.
@@ -98,32 +97,10 @@ const fumetti = defineCollection({
         .default([]),
       // PDF scaricabile gratis: percorso del file dentro public/ (es. download/costolax-n0.pdf).
       pdfGratis: z.string().optional(),
-      // Numero annunciato ma non ancora uscito: mostra "Presto!" e rimanda a fiere e shop.
+      // Numero annunciato ma non ancora uscito: mostra "Presto!" e rimanda a fiere e negozi.
       inArrivo: z.boolean().default(false),
       testoEn,
       inEvidenza: z.boolean().default(false),
-      ordine: z.number().default(0),
-    }),
-});
-
-// Ogni prodotto in vendita è un file in src/content/prodotti/.
-// stripeLink: il Payment Link creato nella dashboard di Stripe (https://buy.stripe.com/...).
-const prodotti = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/prodotti' }),
-  schema: ({ image }) =>
-    z.object({
-      nome: z.string(),
-      nomeEn: z.string().optional(),
-      tipo: z.enum(tipiProdotto),
-      prezzo: z.number().positive(),
-      immagine: image(),
-      immagineAlt: z.string(),
-      immagineAltEn: z.string().optional(),
-      stripeLink: z.url().optional(),
-      disponibile: z.boolean().default(true),
-      fumetto: reference('fumetti').optional(),
-      dettagli: z.array(z.string()).default([]),
-      dettagliEn: z.array(z.string()).optional(),
       ordine: z.number().default(0),
     }),
 });
@@ -152,4 +129,4 @@ const eventi = defineCollection({
     }),
 });
 
-export const collections = { artisti, storie, fumetti, prodotti, eventi };
+export const collections = { artisti, storie, fumetti, eventi };

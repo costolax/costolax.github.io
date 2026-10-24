@@ -2,7 +2,7 @@ import { getCollection } from 'astro:content';
 import type { Lingua } from '../i18n/ui';
 
 // Restituisce una collezione ordinata per il campo "ordine" del frontmatter.
-export async function ordinati<C extends 'artisti' | 'storie' | 'fumetti' | 'prodotti'>(collezione: C) {
+export async function ordinati<C extends 'artisti' | 'storie' | 'fumetti'>(collezione: C) {
   const voci = await getCollection(collezione);
   return voci.sort((a, b) => a.data.ordine - b.data.ordine);
 }

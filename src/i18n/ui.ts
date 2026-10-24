@@ -13,9 +13,7 @@ export const percorsi = {
   artisti: { it: 'autori/', en: 'en/authors/' },
   storie: { it: 'storie/', en: 'en/stories/' },
   eventi: { it: 'fiere/', en: 'en/fairs/' },
-  shop: { it: 'shop/', en: 'en/shop/' },
-  // spedizioni, resi, privacy e contatti stanno nella pagina Shop
-  info: { it: 'shop/', en: 'en/shop/' },
+  negozi: { it: 'negozi/', en: 'en/shops/' },
 } as const;
 export type Sezione = keyof typeof percorsi;
 
@@ -24,13 +22,10 @@ export function link(lingua: Lingua, sezione: Sezione, id?: string): string {
   return url(`${percorsi[sezione][lingua]}${id ? `${id}/` : ''}`);
 }
 
-export const tipiProdotto = ['albo', 'stampa', 'gadget', 'pdf', 'originale'] as const;
-export type TipoProdotto = (typeof tipiProdotto)[number];
-
 const it = {
   motto: 'La rivista dei fumetti marci',
   descrizione:
-    'Costolax è un collettivo di fumettisti indipendenti incazzati e la sua rivista di fumetti marci. Scarica gratis il N.0, compra albi, stampe e tavole originali.',
+    'Costolax è un collettivo di fumettisti indipendenti incazzati e la sua rivista di fumetti marci. Scarica gratis il N.0 e scopri dove trovare la rivista.',
   nastro: ['Fumetti', 'Spille', 'Tavole originali', 'Fiere ed eventi', 'Adesivi'],
   saltaAlContenuto: 'Vai al contenuto',
   tornaAllaHome: 'torna alla home',
@@ -47,42 +42,22 @@ const it = {
     artisti: 'Autori',
     storie: 'Storie',
     eventi: 'Fiere',
-    shop: 'Shop',
+    negozi: 'Negozi',
   },
   piede: {
-    spedizioni: 'Spedizioni',
-    resi: 'Resi',
-    privacy: 'Privacy',
     diritti: 'Tutti i disegni appartengono ai rispettivi autori.',
-    stripe: 'Pagamenti sicuri con Stripe.',
     sitoDi: 'Sito realizzato da',
-  },
-  tipi: {
-    albo: 'Fumetti',
-    stampa: 'Stampe',
-    gadget: 'Gadget',
-    pdf: 'Digitale (PDF)',
-    originale: 'Tavole originali',
-  } satisfies Record<TipoProdotto, string>,
-  compra: {
-    compra: 'Compra',
-    esaurito: 'Esaurito',
-    inArrivo: 'In arrivo',
-    venduto: 'Venduto',
-    etichetta: (nome: string, prezzo: string) => `Compra ${nome} a ${prezzo}`,
   },
   home: {
     primoPiano: 'In primo piano',
     sottotitolo:
       'Collettivo di fumettisti indipendenti incazzati. Vogliamo riportare in auge il fumetto controculturale, e non lo faremo con le buone...',
-    vaiAlloShop: 'Vai allo shop',
+    dovePrenderlo: 'Dove trovarlo',
     leggiIFumetti: 'Sfoglia i fumetti',
     nuovoNumero: 'Il nuovo numero',
     bandaAlt: 'Pippa Calciepugni, quarta di copertina',
     nuvoletta: 'Beccati sto fumetto gratis! Scarica il pdf del n.0 e diffondi il verbo.',
     scaricaNumeroZero: 'Scarica il N.0 →',
-    dalloShop: 'Dallo shop',
-    tuttoLoShop: 'Tutto lo shop →',
     collettivo: 'Il collettivo',
     chiSiamo: 'Chi siamo →',
     prossimiEventi: 'Dove ci trovi',
@@ -96,7 +71,6 @@ const it = {
     intro: 'I numeri della rivista usciti finora. Il n.0 è scaricabile gratis quindi non avete scuse.',
     anteprima: 'Anteprima',
     apreImmagine: "(apre l'immagine a grandezza piena)",
-    portaloACasa: 'Portalo a casa',
     formato: 'Formato',
     pagine: 'Pagine',
     colori: 'Colori',
@@ -104,9 +78,9 @@ const it = {
     scaricaGratis: 'Scarica gratis il PDF',
     gratis: 'Gratis',
     ultimaUscita: 'Ultima uscita',
-    inArrivo: 'Disponibile alle fiere e nello shop.',
+    inArrivo: 'Disponibile alle fiere e nei negozi.',
     vediFiere: 'Dove trovarci',
-    vaiAlloShop: 'Shop',
+    vediNegozi: 'Negozi',
     descrizioneScheda: (titolo: string) => `${titolo} — un fumetto Costolax.`,
   },
   artisti: {
@@ -129,20 +103,12 @@ const it = {
     inCorso: 'In corso',
     unaStoria: (titolo: string) => `${titolo}, una storia di Costolax`,
   },
-  shop: {
-    titolo: 'Shop',
-    descrizione: 'Compra fumetti cartacei e digitali, stampe e tavole originali di Costolax.',
-    intro: 'Tutto quello che esce dal collettivo, direttamente da noi.',
-    spedizioniEResi: 'Spedizioni e resi',
-    comeFunziona: 'Come funziona',
-    passi: [
-      { titolo: 'Scegli', testo: 'Fumetti, stampe, PDF o tavole originali.' },
-      { titolo: 'Paga sicuro', testo: 'Su Stripe: carta, Apple Pay o Google Pay. Non serve registrarsi.' },
-      { titolo: 'Ricevi', testo: 'Spediamo noi in Italia e in UE. I PDF li scarichi subito.' },
-    ],
-    filtraPerTipo: 'Filtra per tipo',
-    tutto: 'Tutto',
-    vuoto: 'Lo shop apre presto: Costolax N.1 arriva qui e alle fiere. Intanto il N.0 si scarica gratis dalla pagina Fumetti.',
+  negozi: {
+    titolo: 'Negozi',
+    titoloPagina: 'Dove trovare Costolax',
+    descrizione: 'Librerie, edicole e negozi dove comprare Costolax, la rivista dei fumetti marci.',
+    intro: 'Librerie, edicole e fumetterie dove trovate la rivista. Oppure veniteci a trovare alle fiere.',
+    mappa: 'Apri la mappa',
   },
   eventi: {
     titolo: 'Fiere',
@@ -155,23 +121,12 @@ const it = {
     sitoEvento: "Sito dell'evento",
     locale: 'it-IT',
   },
-  info: {
-    titolo: 'Info',
-    descrizione: 'Spedizioni, resi, privacy e contatti di Costolax.',
-    intro: 'Spedizioni, resi, privacy e contatti.',
-    inQuestaPagina: 'In questa pagina',
-    ancore: { spedizioni: 'spedizioni', resi: 'resi', privacy: 'privacy', contatti: 'contatti' },
-    voci: { spedizioni: 'Spedizioni', resi: 'Resi', privacy: 'Privacy', contatti: 'Contatti' },
-    zona: 'Zona',
-    costo: 'Costo',
-    tempi: 'Tempi',
-  },
 };
 
 const en: typeof it = {
   motto: 'The rotten comics magazine',
   descrizione:
-    "Costolax is a collective of pissed-off independent cartoonists and their rotten comics magazine. Download N.0 for free, buy comics, prints and original art.",
+    "Costolax is a collective of pissed-off independent cartoonists and their rotten comics magazine. Download N.0 for free and find out where to get the magazine.",
   nastro: ['Comics', 'Pins', 'Original art', 'Fairs and events', 'Stickers'],
   saltaAlContenuto: 'Skip to content',
   tornaAllaHome: 'back to the home page',
@@ -188,42 +143,22 @@ const en: typeof it = {
     artisti: 'Authors',
     storie: 'Stories',
     eventi: 'Fairs',
-    shop: 'Shop',
+    negozi: 'Shops',
   },
   piede: {
-    spedizioni: 'Shipping',
-    resi: 'Returns',
-    privacy: 'Privacy',
     diritti: 'All artwork belongs to its respective authors.',
-    stripe: 'Secure payments with Stripe.',
     sitoDi: 'Website by',
-  },
-  tipi: {
-    albo: 'Comics',
-    stampa: 'Prints',
-    gadget: 'Merch',
-    pdf: 'Digital (PDF)',
-    originale: 'Original art',
-  },
-  compra: {
-    compra: 'Buy',
-    esaurito: 'Sold out',
-    inArrivo: 'Coming soon',
-    venduto: 'Sold',
-    etichetta: (nome, prezzo) => `Buy ${nome} for ${prezzo}`,
   },
   home: {
     primoPiano: 'Featured',
     sottotitolo:
       "A collective of pissed-off independent cartoonists. We want to bring countercultural comics back, and we won't be doing it nicely...",
-    vaiAlloShop: 'Go to the shop',
+    dovePrenderlo: 'Where to get it',
     leggiIFumetti: 'Browse the comics',
     nuovoNumero: 'The new issue',
     bandaAlt: 'Pippa Calciepugni, back cover',
     nuvoletta: 'Grab this comic for free! Download the N.0 PDF and spread the word.',
     scaricaNumeroZero: 'Download N.0 →',
-    dalloShop: 'From the shop',
-    tuttoLoShop: 'The whole shop →',
     collettivo: 'The collective',
     chiSiamo: 'Who we are →',
     prossimiEventi: 'Where to find us',
@@ -237,7 +172,6 @@ const en: typeof it = {
     intro: 'The issues of the magazine released so far. N.0 is a free download, so you have no excuses.',
     anteprima: 'Preview',
     apreImmagine: '(opens the full-size image)',
-    portaloACasa: 'Take it home',
     formato: 'Size',
     pagine: 'Pages',
     colori: 'Colour',
@@ -245,9 +179,9 @@ const en: typeof it = {
     scaricaGratis: 'Download the PDF for free',
     gratis: 'Free',
     ultimaUscita: 'Latest issue',
-    inArrivo: 'Available at fairs and in the shop.',
+    inArrivo: 'Available at fairs and in shops.',
     vediFiere: 'Where to find us',
-    vaiAlloShop: 'Shop',
+    vediNegozi: 'Shops',
     descrizioneScheda: (titolo) => `${titolo} — a Costolax comic.`,
   },
   artisti: {
@@ -270,20 +204,12 @@ const en: typeof it = {
     inCorso: 'Ongoing',
     unaStoria: (titolo) => `${titolo}, a Costolax story`,
   },
-  shop: {
-    titolo: 'Shop',
-    descrizione: 'Buy Costolax comics, prints, digital comics and original art.',
-    intro: 'Everything the collective makes, straight from us.',
-    spedizioniEResi: 'Shipping and returns',
-    comeFunziona: 'How it works',
-    passi: [
-      { titolo: 'Choose', testo: 'Comics, prints, PDFs or original art.' },
-      { titolo: 'Pay safely', testo: 'On Stripe: card, Apple Pay or Google Pay. No account needed.' },
-      { titolo: 'Receive', testo: 'We ship to Italy and the EU ourselves. PDFs download right away.' },
-    ],
-    filtraPerTipo: 'Filter by type',
-    tutto: 'All',
-    vuoto: 'The shop opens soon: Costolax N.1 is coming here and to the fairs. Meanwhile, N.0 is a free download on the Comics page.',
+  negozi: {
+    titolo: 'Shops',
+    titoloPagina: 'Where to find Costolax',
+    descrizione: 'Bookshops, newsstands and stores where you can buy Costolax, the rotten comics magazine.',
+    intro: 'Bookshops, newsstands and comic shops where you can get the magazine. Or come and see us at the fairs.',
+    mappa: 'Open the map',
   },
   eventi: {
     titolo: 'Fairs',
@@ -295,17 +221,6 @@ const en: typeof it = {
     stand: 'Stand',
     sitoEvento: 'Event website',
     locale: 'en-GB',
-  },
-  info: {
-    titolo: 'Info',
-    descrizione: 'Costolax shipping, returns, privacy and contact details.',
-    intro: 'Shipping, returns, privacy and contact.',
-    inQuestaPagina: 'On this page',
-    ancore: { spedizioni: 'shipping', resi: 'returns', privacy: 'privacy', contatti: 'contact' },
-    voci: { spedizioni: 'Shipping', resi: 'Returns', privacy: 'Privacy', contatti: 'Contact' },
-    zona: 'Area',
-    costo: 'Cost',
-    tempi: 'Delivery time',
   },
 };
 

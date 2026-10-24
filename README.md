@@ -1,13 +1,12 @@
 # Costolax — la rivista dei fumetti marci
 
-Sito del collettivo Costolax: fumetti, artisti, eventi e shop, in italiano e in inglese.
-Fatto con [Astro](https://astro.build), pubblicato gratis su GitHub Pages; i pagamenti passano da **Stripe Payment Links**.
+Sito del collettivo Costolax: fumetti, artisti, fiere e negozi dove trovare la rivista, in italiano e in inglese.
+Fatto con [Astro](https://astro.build), pubblicato gratis su GitHub Pages.
 
 | Voce | Costo |
 |---|---|
 | Hosting (GitHub Pages) e HTTPS | 0 € |
-| Dominio `.it` | ~10–15 €/anno |
-| Stripe | 0 € fissi, ~1,5% + 0,25 € a vendita con carta europea |
+| Dominio `.com` | ~10–15 €/anno |
 
 ---
 
@@ -32,7 +31,7 @@ src/
 │   ├── fumetti/         le copertine dei numeri (costolax-n1.webp)
 │   ├── anteprime/       le tavole in anteprima, una cartella per numero (costolax-n1/robopork-pagina-12.webp)
 │   ├── storie/          le copertine delle storie, con lo stesso nome del file della storia (robopork.webp)
-│   ├── laterali/        le immagini a lato in cima alle pagine (Home, Fumetti, Autori, Storie, Fiere, Shop)
+│   ├── laterali/        le immagini a lato in cima alle pagine (Home, Fumetti, Autori, Storie, Fiere, Negozi)
 │   ├── ritratti/        i ritratti degli autori (enrox.webp)
 │   ├── illustrazioni/   altri disegni (la striscia di tavole in home)
 │   └── marchio/         logo e scritta Costolax
@@ -42,10 +41,9 @@ src/
 │   ├── artisti/         un file .md per autore (pagine /autori/)
 │   ├── eventi/          un file .md per fiera o evento (pagine /fiere/, modello: _esempio.md)
 │   ├── fumetti/         un file .md per numero della rivista (pagine /fumetti/), con il sommario
-│   ├── storie/          un file .md per storia o serie (pagina /storie/)
-│   └── prodotti/        un file .md per prodotto in vendita
+│   └── storie/          un file .md per storia o serie (pagina /storie/)
 ├── i18n/ui.ts           tutte le scritte del sito, in italiano e in inglese
-├── site.config.ts       nome, email, Instagram, spese di spedizione
+├── site.config.ts       nome, email, Instagram, negozi dove trovare Costolax
 ├── styles/global.css    colori (tema chiaro e scuro), caratteri e stile dei riquadri
 ├── components/pagine/   il contenuto delle pagine (uno per pagina, per entrambe le lingue)
 └── pages/               gli indirizzi: italiano alla radice, inglese sotto en/
@@ -128,19 +126,11 @@ immagine: ../../assets/illustrazioni/...  # facoltativa: locandina o foto
 
 Gli eventi stanno in "Prossimi eventi" fino all'ultimo giorno compreso, poi passano da soli in "Dove siamo stati". La data di riferimento è quella dell'ultima pubblicazione: dopo un evento basta un push qualsiasi per spostarlo. I prossimi due eventi compaiono anche in home.
 
-**Prodotto** — `src/content/prodotti/nome.md`
-```yaml
-nome: Stampa «Costolax Pink»
-tipo: stampa                     # albo | stampa | gadget | pdf | originale
-prezzo: 15
-immagine: ../../assets/illustrazioni/costolax-pink.webp
-immagineAlt: ...
-stripeLink: https://buy.stripe.com/...   # senza link il pulsante dice "In arrivo"
-disponibile: true                         # false → "Esaurito" / "Venduto"
-fumetto: costolax-n1                      # facoltativo: lo mostra nella pagina del fumetto
-dettagli: [Formato A3, Tiratura limitata]
-ordine: 3
+**Negozio** — in `src/site.config.ts`, nell'elenco `negozi` (pagina /negozi/). Aggiungete una riga copiando quelle che ci sono:
+```ts
+{ nome: 'Altrimondi', indirizzo: 'Via Sebastiano Caboto 20/B', cap: '33170', citta: 'Pordenone', provincia: 'PN' },
 ```
+Il link alla mappa si crea da solo da nome e indirizzo.
 
 Se un campo è sbagliato o manca, `npm run build` si ferma e dice quale.
 
@@ -152,8 +142,8 @@ Il sito segue il tema del telefono o del computer; il pulsante con la luna/il so
 
 Il sito italiano è su `/`, quello inglese su `/en/` (indirizzi tradotti: `/en/comics/`, `/en/authors/`, `/en/events/`…). Il pulsante **IT / EN** in alto porta alla stessa pagina nell'altra lingua.
 
-- **Scritte del sito** (menu, pulsanti, titoli, testi delle pagine): in `src/i18n/ui.ts`, prima tutte in italiano e poi tutte in inglese. Se cambiate una frase, cambiatela in entrambe. I testi di spedizioni, resi e privacy sono in `src/components/InfoSezioni.astro` (compaiono nella pagina Shop).
-- **Contenuti** (fumetti, artisti, prodotti): nello stesso file `.md`, ogni testo può avere un campo gemello con `En` in fondo. Se il campo inglese manca, la versione inglese mostra l'italiano.
+- **Scritte del sito** (menu, pulsanti, titoli, testi delle pagine): in `src/i18n/ui.ts`, prima tutte in italiano e poi tutte in inglese. Se cambiate una frase, cambiatela in entrambe.
+- **Contenuti** (fumetti, artisti, storie, eventi): nello stesso file `.md`, ogni testo può avere un campo gemello con `En` in fondo. Se il campo inglese manca, la versione inglese mostra l'italiano.
 
 ```yaml
 titolo: A calci nel culo          # i titoli propri si possono lasciare uguali
@@ -168,37 +158,7 @@ copertinaAltEn: ...
 testoEn: "Descrizione in inglese (il testo sotto le righe --- è quella italiana)."
 ```
 
-Campi traducibili: artisti `ruoloEn`, `immagineAltEn`, `testoEn` · fumetti `titoloEn`, `sottotitoloEn`, `ruoloEn`, `copertinaAltEn`, `altEn` (nelle tavole), `uscitaEn`, `formatoEn`, `testoEn` · prodotti `nomeEn`, `immagineAltEn`, `dettagliEn`. Per un `testoEn` su più paragrafi usate `testoEn: |` e lasciate una riga vuota tra un paragrafo e l'altro.
-
-Prezzi, immagini e link Stripe sono in comune tra le due lingue. La pagina di pagamento Stripe si apre da sola nella lingua del sito, e la pagina `/grazie/` (dove Stripe rimanda dopo il pagamento) è bilingue.
-
----
-
-## Vendere con Stripe
-
-1. Create un account su [stripe.com](https://stripe.com) (Italia) e completate i dati per ricevere i pagamenti.
-2. Lavorate prima in **modalità test** (interruttore in alto nella dashboard).
-3. **Impostazioni → Branding**: caricate il logo e scegliete i colori (es. magenta `#a8238a`).
-4. **Impostazioni → Checkout e Payment Links**: aggiungete email di assistenza e link a resi e privacy (`/shop/#resi`, `/shop/#privacy`).
-5. Per ogni prodotto: **Payment Links → Crea**, aggiungete il prodotto con prezzo in EUR e poi:
-   - **Prodotti fisici** (albi, stampe, gadget): *Raccogli indirizzi dei clienti → fatturazione e spedizione*, scegliete i paesi e aggiungete le tariffe di spedizione (le stesse scritte in `site.config.ts`). Attivate *Consenti ai clienti di modificare la quantità*.
-   - **Tavole originali**: *Limita il numero di pagamenti* = 1. Dopo la vendita il link si disattiva da solo; mettete `disponibile: false` nel file del prodotto.
-   - **Dopo il pagamento**: *Non mostrare la pagina di conferma → reindirizza al sito* con l'indirizzo `https://costolax.it/grazie/` (il vostro dominio).
-6. Copiate il link (`https://buy.stripe.com/...`) nel campo `stripeLink` del prodotto e fate push.
-7. Provate un acquisto in modalità test con la carta `4242 4242 4242 4242` (qualsiasi data futura e CVC). Quando funziona, rifate i link in modalità live e sostituiteli.
-
-Per comprare più cose insieme senza carrello potete creare **pacchetti** (es. "Albo + stampa") come prodotti a sé, oppure aggiungere un *cross-sell* nel Payment Link.
-
-Gli ordini arrivano via email e si vedono in **Pagamenti** nella dashboard di Stripe, con indirizzo di spedizione.
-
-### Vendere i PDF
-
-Questo repository è **pubblico** (GitHub Pages gratuito lo richiede): **non mettete i PDF a pagamento qui dentro**, chiunque potrebbe scaricarli. Fanno eccezione i numeri gratuiti come il N.0, che stanno in `public/download/`.
-
-1. Caricate il PDF su Google Drive o Dropbox e create un link di condivisione ("chiunque abbia il link").
-2. Nel Payment Link del PDF, alla voce **Dopo il pagamento**, scegliete *Mostra pagina di conferma* e scrivete un messaggio personalizzato con il link al file (oppure reindirizzate direttamente al link del file).
-
-Il link resta nelle impostazioni di Stripe, non nel sito. Limite: chi compra può girarlo ad altri. Per partire va bene; se diventerà un problema si potrà passare a un servizio dedicato.
+Campi traducibili: artisti `ruoloEn`, `immagineAltEn`, `testoEn` · fumetti `titoloEn`, `sottotitoloEn`, `ruoloEn`, `copertinaAltEn`, `altEn` (nelle tavole), `uscitaEn`, `formatoEn`, `testoEn`. Per un `testoEn` su più paragrafi usate `testoEn: |` e lasciate una riga vuota tra un paragrafo e l'altro.
 
 ---
 
@@ -223,7 +183,6 @@ e il file `public/CNAME` con dentro `costolax.com`.
    disponibile (il certificato arriva da solo, di solito entro un'ora).
 3. Consigliato: verificate il dominio nelle impostazioni dell'organizzazione GitHub (**Settings → Pages → Add a domain**),
    così nessun altro può usarlo per un suo sito.
-4. Aggiornate l'indirizzo di ritorno (`/grazie/`) nei Payment Link di Stripe.
 
 ---
 
@@ -231,7 +190,4 @@ e il file `public/CNAME` con dentro `costolax.com`.
 
 - [ ] Verifica di ruoli e crediti dei fumetti (ricavati dalle firme sulle tavole) e delle tavole in anteprima del N.0
 - [ ] Descrizioni dei fumetti
-- [ ] Prezzi, dettagli dei prodotti e spese di spedizione (quelli attuali sono di esempio)
-- [ ] Testi di resi e privacy in `src/components/InfoSezioni.astro` (di esempio: fateli verificare)
 - [ ] Rilettura delle traduzioni inglesi (`src/i18n/ui.ts` e campi `...En` nei contenuti)
-- [ ] Aspetto fiscale delle vendite (partita IVA, vendite occasionali): chiedete a un commercialista

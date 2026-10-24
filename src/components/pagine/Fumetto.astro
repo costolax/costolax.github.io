@@ -1,10 +1,9 @@
 ---
 import { getEntry, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import ProdottoCard from '../ProdottoCard.astro';
 import Testo from '../Testo.astro';
 import Ingrandibile from '../Ingrandibile.astro';
-import { inclina, ordinati, tr } from '../../lib/contenuti';
+import { inclina, tr } from '../../lib/contenuti';
 import { url } from '../../lib/utils';
 import { link, t, type Lingua } from '../../i18n/ui';
 
@@ -34,7 +33,6 @@ const crediti = Object.entries(Object.groupBy(autori, (a) => a.ruolo)).map(([ruo
   ruolo,
   artisti: (gruppo ?? []).map((a) => a.artista),
 }));
-const prodotti = (await ordinati('prodotti')).filter((p) => p.data.fumetto?.id === fumetto.id);
 const sommario = await Promise.all(
   dati.sommario.map(async (voce) => {
     const storia = await getEntry(voce.storia);
@@ -131,8 +129,8 @@ const sommario = await Promise.all(
               <a class="btn" href={link(lingua, 'eventi')}>
                 {testo.vediFiere}
               </a>
-              <a class="btn btn-chiaro" href={link(lingua, 'shop')}>
-                {testo.vaiAlloShop}
+              <a class="btn btn-chiaro" href={link(lingua, 'negozi')}>
+                {testo.vediNegozi}
               </a>
             </div>
           </>
@@ -168,20 +166,6 @@ const sommario = await Promise.all(
     )
   }
 
-  {
-    prodotti.length > 0 && (
-      <section class="wrap sezione">
-        <h2>
-          <span class="titolo-sezione">{testo.portaloACasa}</span>
-        </h2>
-        <div class="griglia">
-          {prodotti.map((prodotto, i) => (
-            <ProdottoCard prodotto={prodotto} lingua={lingua} inclina={inclina(i)} />
-          ))}
-        </div>
-      </section>
-    )
-  }
 </Base>
 
 <style>

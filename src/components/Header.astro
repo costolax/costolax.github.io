@@ -14,7 +14,7 @@ interface Props {
 const { lingua, versioni } = Astro.props;
 const testo = t(lingua);
 const percorso = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
-const menu = (['fumetti', 'artisti', 'storie', 'eventi', 'shop'] as const).map((sezione) => ({
+const menu = (['fumetti', 'artisti', 'storie', 'eventi', 'negozi'] as const).map((sezione) => ({
   label: testo.menu[sezione],
   href: link(lingua, sezione),
 }));
