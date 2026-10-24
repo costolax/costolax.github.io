@@ -3,26 +3,6 @@
 Sito del collettivo Costolax: fumetti, artisti, fiere e negozi dove trovare la rivista, in italiano e in inglese.
 Fatto con [Astro](https://astro.build), pubblicato gratis su GitHub Pages.
 
-| Voce | Costo |
-|---|---|
-| Hosting (GitHub Pages) e HTTPS | 0 € |
-| Dominio `.com` | ~10–15 €/anno |
-
----
-
-## Lavorare sul sito
-
-Serve [Node.js](https://nodejs.org) 22.12 o più recente.
-
-```sh
-npm install      # la prima volta
-npm run dev      # anteprima su http://localhost:4321/
-npm run build    # crea il sito finale in dist/
-npm run check    # controlla errori nei file
-```
-
-Ogni `git push` sul ramo `main` ripubblica il sito da solo (GitHub Actions, file `.github/workflows/deploy.yml`).
-
 ## Dove si trova cosa
 
 ```
@@ -159,35 +139,3 @@ testoEn: "Descrizione in inglese (il testo sotto le righe --- è quella italiana
 ```
 
 Campi traducibili: artisti `ruoloEn`, `immagineAltEn`, `testoEn` · fumetti `titoloEn`, `sottotitoloEn`, `ruoloEn`, `copertinaAltEn`, `altEn` (nelle tavole), `uscitaEn`, `formatoEn`, `testoEn`. Per un `testoEn` su più paragrafi usate `testoEn: |` e lasciate una riga vuota tra un paragrafo e l'altro.
-
----
-
-## Pubblicare su GitHub Pages
-
-Il repository è `costolax/costolax.github.io`: GitHub lo pubblica alla radice di **https://costolax.github.io**.
-
-1. Su GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions** (una volta sola).
-2. Fate push del ramo `main`: il sito si compila e si pubblica da solo in un paio di minuti (scheda **Actions**).
-
-## Collegare il dominio (costolax.com)
-
-Il dominio `costolax.com` è registrato su Hostinger. Il sito ha già `SITE = 'https://costolax.com'` in `astro.config.mjs`
-e il file `public/CNAME` con dentro `costolax.com`.
-
-1. Su Hostinger: **Domini → costolax.com → DNS / Nameserver**. Cancellate i record **A** per `@` e **CNAME** per `www`
-   che ci sono già (sono del parcheggio di Hostinger) e aggiungete:
-   - 4 record **A** per `@`: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-   - 4 record **AAAA** per `@` (facoltativi, per IPv6): `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`
-   - 1 record **CNAME** per `www` → `costolax.github.io`
-2. Su GitHub: **Settings → Pages → Custom domain** = `costolax.com`, poi spuntate **Enforce HTTPS** quando diventa
-   disponibile (il certificato arriva da solo, di solito entro un'ora).
-3. Consigliato: verificate il dominio nelle impostazioni dell'organizzazione GitHub (**Settings → Pages → Add a domain**),
-   così nessun altro può usarlo per un suo sito.
-
----
-
-## Da completare prima di aprire
-
-- [ ] Verifica di ruoli e crediti dei fumetti (ricavati dalle firme sulle tavole) e delle tavole in anteprima del N.0
-- [ ] Descrizioni dei fumetti
-- [ ] Rilettura delle traduzioni inglesi (`src/i18n/ui.ts` e campi `...En` nei contenuti)
