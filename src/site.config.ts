@@ -9,7 +9,7 @@ export const sito = {
   instagram: 'https://www.instagram.com/costolax',
 
   // Chi ha fatto il sito (riga in fondo al footer)
-  crediti: { nome: 'lerro-lerro', github: 'https://github.com/lerro-lerro' },
+  crediti: { nome: 'Leonardo Costa', github: 'https://leonardocosta.eu/' },
 
   // Negozi dove trovare Costolax (pagina Negozi), nell'ordine in cui compaiono.
   // Il link alla mappa si crea da solo da nome e indirizzo.
