@@ -10,6 +10,11 @@ permissions:
   pages: write
   id-token: write
 
+# Un solo deploy alla volta: i push ravvicinati aspettano in coda invece di fallire.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
