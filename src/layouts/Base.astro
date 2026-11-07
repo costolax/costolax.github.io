@@ -104,7 +104,9 @@ const datiStrutturati =
         if (tema === 'chiaro' || tema === 'scuro') document.documentElement.dataset.tema = tema;
       } catch {}
     </script>
-    {nascondiDaiMotori && <meta name="robots" content="noindex" />}
+    <!-- max-image-preview:none: nessuna miniatura accanto ai risultati di Google.
+         L'anteprima nei link condivisi (og:image, sotto) resta. -->
+    <meta name="robots" content={nascondiDaiMotori ? 'noindex' : 'max-image-preview:none'} />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={lingua === 'it' ? 'it_IT' : 'en_GB'} />
